@@ -1,0 +1,12 @@
+{
+    "data": {
+        "currentRoute": {
+            "title": "Neutral TS Web APP",
+            "description": "Example of using Neutral Template System with Web APP and different themes",
+            "icon": "icon-check",
+            "meta": {
+                "name": "content"
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    Exit 403
+    --------
+
+    You may wish to consult the following documentation:
+
+    {:exit; … :}      https://docs.rs/neutralts/latest/neutralts/doc/index.html#exit--
+*:}
+
+{:exit; 403 >> This area is restricted :}

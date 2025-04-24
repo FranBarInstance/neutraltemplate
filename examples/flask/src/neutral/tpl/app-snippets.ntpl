@@ -1,0 +1,85 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    Snippets that depend on the APP
+    -------------------------------
+
+    You may wish to consult the following documentation:
+
+    {:;:} (unprintable)  https://docs.rs/neutralts/latest/neutralts/doc/index.html#-unprintable
+    {:; … :} (var)       https://docs.rs/neutralts/latest/neutralts/doc/index.html#---var
+    {:declare; … :}      https://docs.rs/neutralts/latest/neutralts/doc/index.html#declare--
+    {:allow; … :}        https://docs.rs/neutralts/latest/neutralts/doc/index.html#allow--
+    {:snip; … :}         https://docs.rs/neutralts/latest/neutralts/doc/index.html#snippet--
+*:}
+
+{:*
+    Avoid arbitrary routes.
+    In the schema we have defined the routes as follows:
+
+    {
+      "data": {
+        "site": {
+            "validRoutes": [
+                "home",
+                "login",
+                "logout",
+                "help",
+                "error"
+            ]
+        }
+    }
+
+    The {:;:} is NECESSARY to leave at least one space between words.
+*:}
+{:declare; valid-routes >>
+    {:join; /site->validRoutes/ / :}
+:}
+
+{:*
+    Avoid arbitrary themes.
+*:}
+{:declare; valid-themes >>
+    {:join; /site->validThemes/ / :}
+:}
+
+{:*
+    Avoid arbitrary navbar.
+*:}
+{:declare; valid-navbar >>
+    {:join; /site->navbarColors/ /true/ :}
+:}
+
+{:*
+    Avoid arbitrary langs.
+*:}
+{:declare; valid-langs >>
+    {:join; /site->validLanguages/ / :}
+:}
+
+{:*
+    We check the path, if it fails it will be an empty string, then
+    we will check if this snippet is empty and act accordingly.
+*:}
+{:snip; route >>
+    {:allow; valid-routes >> {:;CONTEXT->ROUTE:} :}
+:}
+
+{:*
+    We check the user's language, if it is not in the list, english.
+*:}
+{:snip; lang >>
+    {:allow; valid-langs >> {:lang;:} :}{:else; en :}
+:}
+
+{:*
+    To simplify this example, we create the user preference cookies with JavaScript.
+*:}
+{:snip; set-cookies >>
+    {:^;:}
+    <script>
+        document.cookie = "theme={:snip; theme :}; path=/";
+        document.cookie = "navbar={:snip; navbar :}; path=/";
+        document.cookie = "lang={:snip; lang :}; path=/";
+    </script>
+:}

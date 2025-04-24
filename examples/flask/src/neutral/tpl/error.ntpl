@@ -1,0 +1,70 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    Errors
+    ------
+*:}
+
+{:*
+    First we load the app snippets, there are things like checking
+    the 404 error that depend on it.
+*:}
+{:^include; {:flg; require :} >> #/app-snippets.ntpl :}
+
+{:*
+    Generic locale if it exists
+*:}
+{:^locale; #/../data/locale-{:snip; lang :}.json :}
+
+{:*
+    Locale for current route and lang if it exists
+*:}
+{:^locale; #/../data/route-{:snip; route :}-locale-{:snip; lang :}.json :}
+
+{:*
+    Data for current theme if it exists
+*:}
+{:^data; #/../data/theme-data.json :}
+
+{:*
+    Data for current route if it exists
+*:}
+{:^data; #/../data/route-{:snip; route :}-data.json :}
+
+{:*
+    Snippets of this theme, the order is important, as these
+    snippets can be overwritten by our configuration.
+*:}
+{:^include; {:flg; require :} >> #/theme-snippets.ntpl :}
+
+{:*
+    Custom theme configuration snippets, overwrite the snippets needed theme-snippets
+*:}
+{:^include; {:flg; require :} >> #/theme-setting-snippets.ntpl :}
+
+{:*
+    Content of the route
+    e.g.: contents-home-snippets.ntpl
+*:}
+{:^include; #/contents-{:snip; route :}-snippets.ntpl :}
+
+{:*
+    Snippets icons
+*:}
+{:include; #/icons-materialicons-snippets.ntpl :}
+
+{:*
+    Spin
+*:}
+{:snip; current-theme-spin :}
+
+{:*
+    Content of the route
+    e.g.: contents-home-snippets.ntpl
+*:}
+{:^include; #/contents-error-snippets.ntpl :}
+
+{:*
+    Render theme
+*:}
+{:^include; {:flg; require :} >> #/theme.ntpl :}

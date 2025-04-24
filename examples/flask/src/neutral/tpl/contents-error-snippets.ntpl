@@ -1,0 +1,30 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+
+{:*
+    Disable login and carousel
+*:}
+{:snip; current-theme-login-form-modal >> :}
+{:snip; current-theme-body-carousel >> :}
+
+{:snip; current-theme-body-content-content >>
+    <main>
+        <div class="container mt-4">
+            <h1 class=" border-bottom p-2"><i class="{:snip; icon-error :}" aria-hidden="true"></i> {:trans; {:;error->text:} :} </h1>
+            <p class="lead text-muted">
+                {:coalesce;
+                    {:same; /{:;error->code:}/404/ >>
+                        {:trans; You won't believe it... but this page doesn't exist, maybe it never existed, nobody knows it. :}
+                    :}
+                    {:trans; {:;error->param:} :}
+                    {:trans; An error has occurred :}
+                :}
+            </p>
+        </div>
+        <div class="container">
+            <div class="row text-center">
+                <div style="font-size: 150px;">{:;error->code:}</div>
+            </div>
+        </div>
+    </main>
+:}

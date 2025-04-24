@@ -1,0 +1,44 @@
+{
+    "short_name": "Cloname",
+    "name": "Clone me again",
+    "description": "Example of using Neutral Template System with Web APP",
+    "id": "/?pwa=1",
+    "start_url": "/?pwa=1",
+    "display": "standalone",
+    "scope": "/",
+    "background_color": "#FFFFFF",
+    "theme_color": "#375A7F",
+    "icons": [
+        {
+            "src": "/pwa/32.png",
+            "type": "image/png",
+            "sizes": "32x32"
+        },
+        {
+            "src": "/pwa/192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/pwa/512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        },
+        {
+            "src": "/pwa/512-maskable.png",
+            "type": "image/png",
+            "sizes": "512x512",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/pwa/120.png",
+            "type": "image/png",
+            "sizes": "120x120"
+        },
+        {
+            "src": "/pwa/180.png",
+            "type": "image/png",
+            "sizes": "180x180"
+        }
+    ]
+}

@@ -1,0 +1,123 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    Overwrite and/or configure the theme snippets
+    ---------------------------------------------
+
+    In some cases it is sufficient to overwrite the value:
+
+        {:snip; current-theme-body-class >>
+            any-class
+        :}
+
+    Now "current-theme-body-class" will show the new class.
+
+    Other snippets define snippets:
+
+        {:snip; current-theme-icons-materialicons >>
+            {:snip; current-theme-icons >>
+                materialicons
+            :}
+        :}
+
+        {:snip; current-theme-icons-fontawesome >>
+            {:snip; current-theme-icons >>
+                fontawesome
+            :}
+        :}
+
+    If we do:
+
+        {:snip; current-theme-icons-materialicons :}
+
+    What we do is define:
+
+        {:snip; current-theme-icons >>
+            materialicons
+        :}
+
+    So when "current-theme-icons" is called in the template its value will
+    be "materialicons"
+
+    In this way the template can give us configurable options.
+
+    Another strategy for setting options is to define different snippet for
+    different options and use a variable to invoke them.
+
+
+        {:snip; current-theme-workaround-css:materia >>
+            ..
+        :}
+
+        {:snip; current-theme-workaround-css:litera >>
+            ..
+        :}
+
+    Then:
+
+        {:snip; current-theme-workaround-css:{:;currentTheme:} :}
+
+*:}
+
+{:*
+    Spin theme
+
+    Options:
+        {:snip; current-theme-spin-set-spin1 :}
+        {:snip; current-theme-spin-set-spin2 :}
+        {:snip; current-theme-spin-set-spin3 :}
+        {:snip; current-theme-spin-set-spin4 :}
+        {:snip; current-theme-spin-set-spin5 :}
+        {:snip; current-theme-spin-set-spin6 :}
+*:}
+{:snip; current-theme-spin-set-spin3 :}
+
+{:*
+    H1 size
+
+    Options:
+        {:snip; current-theme-heading-medium :}
+        {:snip; current-theme-heading-small :}
+        or none: big
+*:}
+{:snip; current-theme-heading-medium :}
+
+{:*
+    Body class
+*:}
+{:snip; current-theme-body-class >>
+
+:}
+
+{:*
+    navbar colors
+*:}
+{:snip; current-theme-body-navbar-color >>
+    {:;site->navbarColors->{:snip; navbar :}:} shadow-sm
+:}
+
+{:*
+    navbar size
+*:}
+{:snip; current-theme-body-navbar-size >>
+    py-1 py-md-3
+:}
+
+{:*
+    Theme
+*:}
+{:snip; theme >>
+    {:allow; valid-themes >> {:;site->theme:} :}{:else; flatly :}
+:}
+
+{:*
+    navbar
+*:}
+{:snip; navbar >>
+    {:allow; valid-navbar >> {:;site->navbar:} :}{:else; primary :}
+:}
+
+{:*
+    Uncomment for disable carousel
+*:}
+{:*  {:snip; current-theme-body-carousel >> :}  *:}

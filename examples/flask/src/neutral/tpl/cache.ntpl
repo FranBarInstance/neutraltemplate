@@ -1,0 +1,10 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    Cache
+    -----
+*:}
+
+{:cache; /120/{:;CONTEXT->HEADERS->Requested-With-Ajax:}/ >>
+    {:^include; {:flg; require :} >> #/index.ntpl :}
+:}

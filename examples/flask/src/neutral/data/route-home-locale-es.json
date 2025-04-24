@@ -1,0 +1,13 @@
+{
+    "trans": {
+        "es": {
+            "Neutral TS Web APP": "Neutral TS Web APP",
+            "Example of using Neutral Template System with Web APP and different themes": "Ejemplo de uso de Neutral Template System con Web APP y diferentes temas",
+            "None": "Ninguno",
+            "Name": "Nombre",
+            "Value": "Valor",
+            "Send GET": "Enviar GET",
+            "Send POST": "Enviar POST"
+        }
+    }
+}

@@ -1,0 +1,34 @@
+{
+    "trans": {
+        "es": {
+            "Menu": "Menu",
+            "Cloneme the clone of the clone": "Cloname el clon del clon del clon",
+            "Find out about the latest Internet nonsense.": "Entérate de las últimas majaderías de Internet.",
+            "Home": "Inicio",
+            "Language": "Idioma",
+            "Login": "Entrar",
+            "Logout": "Salir",
+            "Sign in": "Entrar",
+            "Sign off": "Salir",
+            "Theme": "Tema",
+            "Help": "Ayuda",
+            "Close": "Cerrar",
+            "Install APP": "Instalar APP",
+            "Simulate 404": "Simular 404",
+            "Simulate 403": "Simular 403",
+            "Simulate 503": "Simular 503",
+            "Redirect 302": "Redirección 302",
+            "User": "Usuario",
+            "Password": "Contraseña",
+            "User (hint: any)": "Usuario (pista: cualquiera)",
+            "Password (hint: 1234)": "Contraseña (pista: 1234)",
+            "Remember": "Recordar",
+            "You won't believe it... but this page doesn't exist, maybe it never existed, nobody knows it.": "No te lo vas a creer... pero esta página no existe, quizás nunca existió, nadie lo sabe.",
+            "This area is restricted": "Esta zona está restringida",
+            "Maintenance mode, apologies.": "Modo de mantenimiento, disculpas.",
+            "Welcome!": "¡Bienvenido!",
+            "You have started the session.": "Has iniciado la sesión.",
+            "Close session": "Cerrar la sesión"
+        }
+    }
+}

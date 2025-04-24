@@ -1,0 +1,16 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    Redirect
+    --------
+
+    It can also be done with exit:
+    {:exit; 302 >> https://crates.io/crates/neutralts :}
+
+    You may wish to consult the following documentation:
+
+    {:redirect; … :}  https://docs.rs/neutralts/latest/neutralts/doc/index.html#redirect--
+    {:exit; … :}      https://docs.rs/neutralts/latest/neutralts/doc/index.html#exit--
+*:}
+
+{:redirect; 302 >> https://crates.io/crates/neutralts :}

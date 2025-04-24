@@ -1,0 +1,90 @@
+{
+    "data": {
+        "currentTheme": {
+            "carousel": [
+                "/img/cover.jpg",
+                "/img/cover.jpg"
+            ]
+        },
+        "currentDrawer": {
+            "name": "Neutral TS",
+            "menu": {
+                "main": {
+                    "main": {
+                        "name": "Main",
+                        "tabs": "main",
+                        "icon": "icon-menu"
+                    },
+                    "user": {
+                        "name": "User",
+                        "tabs": "user",
+                        "icon": "icon-user"
+                    },
+                    "theme": {
+                        "name": "Theme",
+                        "tabs": "theme",
+                        "icon": "icon-channel"
+                    },
+                    "help": {
+                        "name": "Help",
+                        "tabs": "help",
+                        "icon": "icon-help"
+                    }
+                },
+                "tabs": {
+                    "main": {
+                        "home": {
+                            "text": "Home",
+                            "link": "/",
+                            "icon": "icon-home"
+                        },
+                        "404": {
+                            "text": "Simulate 404",
+                            "link": "/simulate-404",
+                            "icon": "icon-error"
+                        },
+                        "403": {
+                            "text": "Simulate 403",
+                            "link": "/simulate-403",
+                            "icon": "icon-error"
+                        },
+                        "503": {
+                            "text": "Simulate 503",
+                            "link": "/simulate-503",
+                            "icon": "icon-error"
+                        },
+                        "302": {
+                            "text": "Redirect 302",
+                            "link": "/simulate-302",
+                            "icon": "icon-web"
+                        },
+                        "spin": {
+                            "text": "Simulate Spin",
+                            "link": "?simulate_spin=15000",
+                            "icon": "icon-up"
+                        }
+                    },
+                    "user": {
+                        "login": {
+                            "text": "Login",
+                            "link": "/login",
+                            "icon": "icon-sign-in"
+                        },
+                        "logout": {
+                            "text": "Logout",
+                            "link": "/logout",
+                            "icon": "icon-sign-off"
+                        }
+                    },
+                    "help": {
+                        "help": {
+                            "text": "Help",
+                            "link": "/help",
+                            "icon": "icon-help"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

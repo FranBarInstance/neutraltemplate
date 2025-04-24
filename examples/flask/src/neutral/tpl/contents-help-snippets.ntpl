@@ -1,0 +1,23 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+
+{:*
+    Disable carousel
+*:}
+{:snip; current-theme-body-carousel >> :}
+
+{:snip; highlight-js :}
+
+{:snip; current-theme-body-content-content >>
+    <main>
+        {:snip; current-theme-page-title :}
+        <div class="container">
+            <div class="border border-1 my-4">
+                <pre class="border-0 m-0 p-0"><code class="px-4 py-3 language-markdown" style="white-space: pre-wrap; background-color: #FaFaFa;">
+                    {:^include; {:flg; safe :} >> #/../../../README.md :}
+                    {:^else; {:^include; {:flg; safe :} >> #/README.md :} :}
+                </code></pre>
+            </div>
+        </div>
+    </main>
+:}

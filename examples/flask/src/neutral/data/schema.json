@@ -1,0 +1,92 @@
+{
+    "config": {
+        "comments": "remove",
+        "cache_prefix": "neutral-cache",
+        "cache_dir": "",
+        "cache_on_post": false,
+        "cache_on_get": true,
+        "cache_on_cookies": true,
+        "cache_disable": false,
+        "disable_js": true,
+        "filter_all": false
+    },
+    "inherit": {
+        "locale": {
+            "current": "en",
+            "trans": {
+                "en": {
+                    "ref-locale-en": "English",
+                    "ref-locale-es": "Español"
+                },
+                "es": {
+                    "ref-locale-en": "English",
+                    "ref-locale-es": "Español"
+                }
+            }
+        }
+    },
+    "data": {
+        "site": {
+            "name": "{:;:}",
+            "menu": {
+                "name": "Menu",
+                "link": "/"
+            },
+            "title": "Neutral TS Web App Example",
+            "description": "A simple example of using Neutral Template System with Web App and different themes",
+            "meta": {
+                "author": "Neutral Template System",
+                "generator": "neutralts"
+            },
+            "validLanguages": [
+                "en",
+                "es"
+            ],
+            "validRoutes": [
+                "home",
+                "post",
+                "login",
+                "form-login",
+                "logout",
+                "help",
+                "simulate-404",
+                "simulate-403",
+                "simulate-503",
+                "simulate-302"
+            ],
+            "validThemes": [
+                "flatly",
+                "sketchy",
+                "cerulean",
+                "cosmo",
+                "cyborg",
+                "darkly",
+                "journal",
+                "litera",
+                "lumen",
+                "lux",
+                "materia",
+                "minty",
+                "morph",
+                "pulse",
+                "quartz",
+                "sandstone",
+                "simplex",
+                "slate",
+                "solar",
+                "spacelab",
+                "superhero",
+                "united",
+                "vapor",
+                "yeti",
+                "zephyr"
+            ],
+            "navbarColors": {
+                "primary": "navbar-dark bg-primary",
+                "dark": "navbar-dark bg-dark",
+                "light": "navbar-light bg-light",
+                "tertiary": "navbar-light bg-body-tertiary"
+            }
+        }
+    }
+}

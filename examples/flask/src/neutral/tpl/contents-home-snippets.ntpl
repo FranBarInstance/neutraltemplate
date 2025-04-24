@@ -1,0 +1,114 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:snippet; current-theme-body-content-content >>
+    <main>
+        {:snippet; current-theme-page-title :}
+        <div class="container mt-md-5">
+            {:filled; CONTEXT->SESSION >>
+                {:*
+                    If the session is logged in display a welcome message
+                *:}
+                <div class="alert alert-dismissible alert-success">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <strong>{:trans; Welcome! :}</strong> {:trans; You have started the session. :}
+                </div>
+            :}
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-4">
+                    <div class="card border-light mb-3">
+                        <div class="card-header">CONTEXT->GET</div>
+                        <div class="card-body">
+                            {:each; CONTEXT->GET name value >>
+                                {:&;name:} = {:&;value:}
+                                {:;:}<br>
+                            :}{:else;
+                                {:trans; None :}
+                            :}
+                            <hr>
+                            <form class="" id="setget" method="GET">
+                                <div class="row">
+                                    <div class="col">
+                                        <input placeholder="{:trans; Name :}" class="form-control" type="text" id="paramName" name="paramName" required>
+                                    </div>
+                                    <div class="col">
+                                        <input placeholder="{:trans; Value :}" class="form-control" type="text" id="paramValue" name="paramValue">
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <button class="btn btn-primary w-100" type="submit">{:trans; Send GET :}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-light mb-3">
+                        <div class="card-header">CONTEXT->POST</div>
+                        <div class="card-body">
+                            {:each; CONTEXT->POST name value >>
+                                {:&;name:} = {:&;value:}
+                                {:;:}<br>
+                            :}{:else;
+                                {:trans; None :}
+                            :}
+                            <hr>
+                            <form class="" id="setget" method="GET">
+                                <div class="row">
+                                    <div class="col">
+                                        <input placeholder="{:trans; Name :}" class="form-control" type="text" id="paramNamePost" name="paramNamePost" required>
+                                    </div>
+                                    <div class="col">
+                                        <input placeholder="{:trans; Value :}" class="form-control" type="text" id="paramValuePost" name="paramValuePost" required>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <button type="button" class="btn btn-primary w-100" onclick="set_post()">{:trans; Send POST :}</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-light mb-3">
+                        <div class="card-header">CONTEXT->COOKIES</div>
+                        <div class="card-body">
+                            {:each; CONTEXT->COOKIES name value >>
+                                {:&;name:} = {:&;value:}
+                                {:;:}<br>
+                            :}{:else;
+                                {:trans; None :}
+                            :}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.getElementById('setget').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const paramName = document.getElementById('paramName').value;
+                const paramValue = document.getElementById('paramValue').value;
+                const newParam = `${encodeURIComponent(paramName)}=${encodeURIComponent(paramValue)}`;
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set(paramName, paramValue);
+                const newUrl = `${window.location.origin}${window.location.pathname}?${urlParams.toString()}`;
+                window.location.href = newUrl;
+            });
+            function set_post() {
+                const paramName = document.getElementById('paramNamePost').value;
+                const paramValue = document.getElementById('paramValuePost').value;
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/';
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = paramName;
+                input.value = paramValue;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        </script>
+    </main>
+:}

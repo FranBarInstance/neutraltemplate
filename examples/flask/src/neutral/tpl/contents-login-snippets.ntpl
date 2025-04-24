@@ -1,0 +1,32 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    Disable modal login and carousel.
+    If you do not disable the login modal, there will be two forms with the same id on the same page.
+*:}
+{:snip; current-theme-login-form-modal >> :}
+{:snip; current-theme-body-carousel >> :}
+
+{:snip; current-theme-body-content-content >>
+    {:filled; CONTEXT->SESSION >>
+        {:redirect; js:redirect:top >> / :}
+    :}{:else;
+        <main>
+            {:snip; current-theme-page-title :}
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-5 col-12">
+                        <div class="card border-light mb-3 mt-md-4" style="max-width: 480px;">
+                            <div class="card-body px-4 pb-4 pt-3">
+                                {:*  {:snip; current-theme-login-form :}  *:}
+                                {:fetch; "/form-login" >>
+                                    <div class="text-center p-5">{:snip; spin-2x :}</div>
+                                :}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    :}
+:}

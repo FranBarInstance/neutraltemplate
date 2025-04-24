@@ -1,0 +1,12 @@
+{
+    "data": {
+        "currentRoute": {
+            "title": "Sign in",
+            "description": "Cloneme login page",
+            "icon": "icon-sign-in",
+            "meta": {
+                "name1": "content1"
+            }
+        }
+    }
+}

@@ -1,0 +1,845 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+
+{:*
+    Login form
+    ----------
+*:}
+{:snip; current-theme-login-form >>
+    <div id="form-wrapper">
+        {:filled; CONTEXT->SESSION >>
+            {:filled; CONTEXT->COOKIES->SESSION >>
+                {:redirect; js:redirect:top >> / :}
+            :}{:else;
+                <div class="text-center p-5">{:snip; spin-2x :}</div>
+                <div class="script-container">
+                    <script>
+                        document.cookie = "SESSION={:;CONTEXT->SESSION:}; path=/";
+                        // Allow time for cookie javascript to run
+                        setTimeout(function(){ self.location.href=self.location.href.split('#')[0] }, 500);
+                    </script>
+                </div>
+            :}
+        :}{:else;
+            {:bool; send_form_login_fails >>
+                <div class="alert alert-dismissible alert-danger">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    {:trans; Try sending again, password: 1234. :}
+                </div>
+            :}
+            {:fetch; |/form-login|form|form-wrapper|forms-bt5-form border border-0|form-login| >>
+                <div class="input-group input-group-md mb-2">
+                    <span class="input-group-text {:snip; icon-user-login :}"></span>
+                    <input
+                        type="text"
+                        id="form-login-user-name"
+                        name="user"
+                        value="{:;CONTEXT->POST->user:}"
+                        class="form-control"
+                        placeholder="{:trans; User :}"
+                        aria-label="{:trans; Username :}"
+                        _pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                        required
+                    >
+                    <span type="button" class="input-group-text {:snip; icon-help :}" data-bs-toggle="popover" data-bs-title="{:trans; Help username :}" data-bs-content="{:trans; ref:form-login-user-name :}"></span>
+                </div>
+                <div class="input-group input-group-md mb-2">
+                    <span class="input-group-text {:snip; icon-user-password :}"></span>
+                    <input
+                        type="password"
+                        id="form-login-user-password"
+                        name="passwd"
+                        value="{:;CONTEXT->POST->passwd:}"
+                        class="form-control"
+                        placeholder="{:trans; Password :}"
+                        aria-label="{:trans; Password :}"
+                        required
+                    >
+                    <span type="button" class="input-group-text {:snip; icon-help :}" data-bs-toggle="popover" data-bs-title="{:trans; Help password :}" data-bs-content="{:trans; ref:form-login-user-password :}"></span>
+                </div>
+                <div class="input-group input-group-checkbox {:snip; forms-input-group-class :}">
+                    <span class="input-group-text">
+                        <input
+                            type="checkbox"
+                            id="form-login-user-remember"
+                            name="remember"
+                            class="form-check-input mb-1"
+                            aria-label="{:trans; Remember :}"
+                            role="button"
+                            value="1"
+                            {:filled; CONTEXT->POST->remember >> checked :}
+                        >
+                    </span>
+                    <label role="button" class="form-check-label form-control" for="form-login-user-remember">{:trans; Remember :}</label>
+                    <span type="button" class="input-group-text {:snip; icon-help :}" data-bs-toggle="popover" data-bs-title="{:trans; Help remember :}" data-bs-content="{:trans; ref:form-login-user-remember :}"></span>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button
+                        type="submit"
+                        id="form-login-button-submit"
+                        name="form_login_send"
+                        class="mt-3 w-100 btn btn-primary {:snip; icon-sign-in :}"
+                        value="1"
+                    > {:trans; Sign in :}</button>
+                </div>
+            :}
+        :}
+    </div>
+:}
+
+{:*
+    Log in/out form modal
+    ---------------------
+*:}
+{:snip; current-theme-login-form-modal >>
+    {:filled; CONTEXT->SESSION >>
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="loginModalLabel">{:trans; Logout :}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body mx-md-5 mb-3 mx-auto text-center">
+                        <div class="mt-4 px-5">
+                            {:fetch; |/logout|click| >>
+                                <button type="button" class="btn btn-primary w-100">{:trans; Close session :}</button>
+                            :}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{:trans; Close :}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    :}{:else;
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="loginModalLabel">{:trans; Login :}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body mx-md-5 mb-3">
+                        {:fetch; |/form-login|visible| >>
+                            <div class="text-center p-5">{:snip; spin-2x :}</div>
+                        :}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{:trans; Close :}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    :}
+:}
+
+
+{:*
+    Theme snippets
+    --------------
+*:}
+
+{:*
+    Page heading
+    ------------
+*:}
+{:snip; current-theme-page-title >>
+    <div class="container mt-4">
+        <h1 class="border-bottom p-2"><img class="mb-1" width="60" src="/img/neutral-a-192.png" class=""> {:trans; {:;local::currentRoute->title:} :}</h1>
+        <p class="lead text-muted"> {:trans; {:;local::currentRoute->description:} :}</p>
+    </div>
+:}
+
+{:*
+    Drawer footer
+    -------------
+*:}
+{:snip; current-theme-drawer-body-footer >>
+    <div class="text-center w-100 mx-auto mb-3">
+        <hr class="mx-3">
+        <button class="add-as-pwa btn btn-light d-inline add-as-pwa mdi mdi-monitor-cellphone-star"> {:trans; Install APP :}</button>
+    </div>
+:}
+
+{:*
+    Drawer menu
+    -----------
+*:}
+{:snip; current-theme-drawer-themes-menu >>
+    <div class="tab-pane fade" id="current-theme-drawer-tabs-theme" role="tabpanel" aria-labelledby="current-theme-drawer-theme">
+        <div class="list-group">
+            <a title="{:trans; Theme :}" class="list-group-item list-group-item-action item-toggle" data-bs-toggle="collapse" data-bs-target="#menu-drawer-theme-collapse">
+                <i class="{:snip; icon-add :}" aria-hidden="true"></i> {:trans; Theme :} ({:snip; theme :})
+            </a>
+            <div class="collapse menu-collapse" id="menu-drawer-theme-collapse">
+                {:each; site->validThemes key theme >> {:;:}
+                    <a href="?theme={:;theme:}" class="list-group-item list-group-item-action">
+                        <i class="{:snip; icon-right :}" aria-hidden="true"></i> <span>{:;theme:}</span>
+                    </a>
+                :}
+            </div>
+            <a title="{:trans; Colors :}" class="list-group-item list-group-item-action item-toggle" data-bs-toggle="collapse" data-bs-target="#menu-drawer-navbar-collapse">
+                <i class="{:snip; icon-add :}" aria-hidden="true"></i> {:trans; Navbar :} ({:snip; navbar :})
+            </a>
+            {:*  <div class="collapse menu-collapse" id="menu-drawer-navbar-collapse">
+                {:each; site->navbarColors name color >> {:;:}
+                    <a href="?navbar={:;name:}" class="list-group-item list-group-item-action">
+                        <i class="{:snip; icon-right :}" aria-hidden="true"></i> <span>{:;name:}</span>
+                    </a>
+                :}
+            </div>  *:}
+        </div>
+    </div>
+:}
+
+{:*
+    Carousel
+    --------
+*:}
+{:snip; current-theme-body-carousel >>
+    {:snip; carousel-active-0 >>
+        active
+    :}
+    {:filled; local::currentTheme->carousel >>
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {:each; local::currentTheme->carousel key image >> {:;:}
+                    <div class="carousel-item {:snip; carousel-active-{:;key:} :}" data-bs-interval="8000">
+                        <img src="{:;image:}" class="d-block w-100">
+                    </div>
+                :}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">{:trans; Previous :}</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">{:trans; Next :}</span>
+            </button>
+        </div>
+    :}
+:}
+
+
+{:*
+    heading size small
+    ------------------
+*:}
+{:snip; current-theme-heading-small >>
+    {:snip; current-theme-heading >>
+        <style>
+            h1, .h1 {
+                font-size: 1.6rem;
+            }
+            h2, .h2 {
+                font-size: 1.5rem;
+            }
+            h3, .h3 {
+                font-size: 1.4rem;
+            }
+            h4, .h4 {
+                font-size: 1.3rem;
+            }
+            h5, .h5 {
+                font-size: 1.2rem;
+            }
+            h6, .h6 {
+                font-size: 1.1rem;
+            }
+        </style>
+    :}
+:}
+
+{:*
+    heading size medium
+    ------------------
+*:}
+{:snip; current-theme-heading-medium >>
+    {:snip; current-theme-heading >>
+        <style>
+            h1, .h1 {
+                font-size: 2.1rem;
+            }
+            h2, .h2 {
+                font-size: 1.9rem;
+            }
+            h3, .h3 {
+                font-size: 1.7rem;
+            }
+            h4, .h4 {
+                font-size: 1.5rem;
+            }
+            h5, .h5 {
+                font-size: 1.3rem;
+            }
+            h6, .h6 {
+                font-size: 1.1rem;
+            }
+        </style>
+    :}
+:}
+
+{:*
+    navbar right menu
+    -----------------
+*:}
+{:snip; current-theme-body-navbar-right-content >>
+    <ul class="navbar-nav ms-auto">
+        {:filled; CONTEXT->SESSION >>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="{:snip; icon-sign-off  :}" aria-hidden="true"></i> <span class="d-none d-md-inline">{:trans; Sign off :}</span>
+                </a>
+            </li>
+        :}{:else;
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="{:snip; icon-sign-in  :}" aria-hidden="true"></i> <span class="d-none d-md-inline">{:trans; Sign in :}</span>
+                </a>
+            </li>
+        :}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="language"><i class="{:snip; icon-locale  :}" aria-hidden="true"></i> <span class="d-none d-md-inline">{:trans; Language :}</span></a>
+            <div class="dropdown-menu dropdown-menu-end">
+            {:each; site->validLanguages key lang >> {:^;:}
+                <a class="dropdown-item" href="?lang={:;lang:}">{:trans; ref-locale-{:;lang:} :} {:snip; check-{:;lang:} :}</a>
+            :}
+            </div>
+        </li>
+    </ul>
+:}
+
+
+{:*
+    Theme default nav
+    -----------------
+*:}
+{:snip; current-theme-body-navbar >>
+    <nav id="main-navbar" class="main-navbar main-navbar-visible d-block {:snip; current-theme-body-navbar-class :}{:else; navbar navbar-expand fixed-top :} {:snip; current-theme-body-navbar-color :}{:else; navbar-light bg-light :} {:snip; current-theme-body-navbar-size :}{:else; py-2 py-md-3 :}">
+        <div class="container">
+            <button class="navbar-nav btn border-0 shadow-none p-0 px-1 me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#current-theme-drawer" aria-controls="current-theme-drawer">
+                <span title="{:trans; {:;site->menu->name:} :}{:else; {:trans; Menu :} :}" class="navbar-toggler-icon disabled"></span>
+            </button>
+            <a class="navbar-brand mx-1 me-md-3" href="{:;site->menu->link:}" style="height: 37px; display: flex; align-items: center;">
+                <span class="page-is-loading small" style="margin-top: 2px; margin-left: 2px; margin-right: 10px;">{:snip; spin-1x :}</span>
+                <span class="page-has-loaded nav-brand-text me-md-2" style="display: none;">{:trans; {:;site->name:} :}{:else; Neutral :}</span>
+            </a>
+            <ul class="current-theme-body-navbar-right navbar-nav ms-auto">
+                {:snip; current-theme-body-navbar-right-content :}
+            </ul>
+        </div>
+        <div class="container current-theme-body-navbar-bottom navbar-nav">
+            {:snip; current-theme-body-navbar-bottom-content :}
+        </div>
+        <div class="container current-theme-body-navbar-notices navbar-nav">
+            {:snip; current-theme-body-navbar-notices-content :}
+        </div>
+    </nav>
+    <div id="main-navbar-hidden" style="position: relative; visibility: hidden;">
+        {:*
+            Simulate height navigation bar spacing
+        *:}
+        <script>
+            function currentMainNavbarHeight() {
+                var eleMainNavbar   = document.getElementById('main-navbar');
+                var eleNavbarHidden = document.getElementById('main-navbar-hidden');
+                if (window.getComputedStyle(eleMainNavbar).getPropertyValue('position').match(/fixed|sticky/i)) {
+                    var mainNavBarHeight = eleMainNavbar.offsetHeight;
+                    eleNavbarHidden.setAttribute('style', 'height:' + mainNavBarHeight + 'px' );
+                } else {
+                    eleNavbarHidden.setAttribute('style', 'height:0px');
+                    eleNavbarHidden.style.display = 'none';
+                }
+            }
+            currentMainNavbarHeight();
+            window.addEventListener('load', (event) => {
+                currentMainNavbarHeight();
+            });
+            window.addEventListener('resize', (event) => {
+                setTimeout(function(){
+                    currentMainNavbarHeight();
+                }, 50);
+            });
+        </script>
+    </div>
+    {:snip; current-theme-drawer :}
+:}
+
+{:*
+    Theme drawer
+    ------------
+*:}
+{:snip; current-theme-drawer >>
+    <div class="offcanvas offcanvas-start shadow theme-drawer" tabindex="-1" id="current-theme-drawer" aria-labelledby="current-theme-drawer-label" style="width: 350px; max-width: 100%;">
+        <div class="offcanvas-header px-1 {:snip; current-theme-body-navbar-color :}{:else; navbar-light bg-light :}  {:snip; current-theme-body-navbar-size :}{:else; py-2 py-md-3 :}" data-bs-dismiss="offcanvas">
+            <div class="navbar-brand d-flex align-items-center ms-2">
+                <span class="mx-2">{:trans; {:;local::currentDrawer->name:} :}</span>
+            </div>
+            <i class="{:snip; icon-back :} theme-drawer-close text-muted btn btn-link me-2 ms-auto" data-bs-dismiss="offcanvas" aria-hidden="true"></i>
+        </div>
+        <div class="offcanvas-body p-0">
+            {:snip; current-theme-drawer-body-content :}
+        </div>
+        <div class="offcanvas-footer">
+            {:snip; current-theme-drawer-body-footer :}
+        </div>
+    </div>
+:}
+
+{:*
+    Theme drawer content
+    --------------------
+*:}
+{:snip; current-theme-drawer-body-content >>
+    <div class="d-flex align-items-start mt-2" id="current-theme-drawer-body-content">
+        <div class="nav flex-column nav-pills me-2 border-end" id="current-theme-drawer-tabs" role="tablist" aria-orientation="vertical">
+            {:each; local::currentDrawer->menu->main tabs menu >> {:;:}
+                <button title="{:trans; {:;menu->name:} :}" class="drawer-btn nav-link py-1 px-2 m-3" id="current-theme-drawer-tabs-main-btn" data-bs-toggle="pill" data-bs-target="#current-theme-drawer-tabs-{:;tabs:}" type="button" role="tab" aria-controls="current-theme-drawer-tabs-{:;tabs:}" aria-selected="true">
+                    <i class="{:snip; {:;menu->icon:} :} x-icon-24px" aria-hidden="true"></i>
+                </button>
+            :}
+        </div>
+        <div class="tab-content text-truncate me-2 mt-3 w-100" id="current-theme-drawer-tabs-content">
+            {:each; local::currentDrawer->menu->tabs tabs menu >> {:;:}
+                <div class="tab-pane fade" id="current-theme-drawer-tabs-{:;tabs:}" role="tabpanel" aria-labelledby="current-theme-drawer-{:;tabs:}">
+                    <div class="list-group">
+                        {:each; menu key opt >> {:;:}
+                            <a href="{:;opt->link:}" class="list-group-item list-group-item-action">
+                                <i class="{:snip; {:;opt->icon:} :}" aria-hidden="true"></i> <span>{:trans; {:;opt->text:} :}</span>
+                            </a>
+                        :}
+                    </div>
+                </div>
+            :}
+            {:snip; current-theme-drawer-themes-menu :}
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', (event) => {
+            var drawerOffcanvas = new bootstrap.Offcanvas(document.getElementById('current-theme-drawer'));
+            $('#current-theme-drawer-tabs-main-btn').click();
+            drawerOffcanvas.hide();
+            $('#current-theme-drawer-tabs-content a').on('click', function(e) {
+                if ($(this).attr("href")) {
+                    drawerOffcanvas.hide();
+                }
+            });
+        });
+    </script>
+:}
+
+
+{:*
+    Theme default content wrapper
+    -----------------------------
+*:}
+{:snip; current-theme-body-content >>
+    <div id="current-theme-body-content" class="current-theme-body-content" style="min-height:  calc(100vh - 120px);">
+
+        {:*
+            Header
+        *:}
+        {:snip; current-theme-body-content-page-header :}
+        <div class="{:snip; current-theme-body-content-container-class :}">
+
+            {:*
+                Grid para sidebar, wrapper para sidebar y page-content.
+                else: se muestra sólo page-content sin grid.
+            *:}
+            {:snip; current-theme-body-content-grid-sidebar :}
+            {:else;
+                {:snip; current-theme-body-content-content :}
+            :}
+        </div>
+    </div>
+:}
+
+{:*
+    Theme default footer
+    --------------------
+*:}
+{:snip; current-theme-body-footer >>
+    <footer class="">
+        <div class="container -fixed-bottom">
+            {:snip; current-theme-body-footer-content :}
+        </div>
+    </footer>
+:}
+
+{:snip; current-theme-body-footer-content >>
+    <div class="text-center w-100 mx-auto my-5">
+        <hr class="mx-2">
+        <div>
+            <p>
+                Neutral TS:
+                <a href="https://docs.rs/neutralts/latest/neutralts/">Docs</a> -
+                <a href="https://crates.io/crates/neutralts">Crate</a> -
+                <a href="https://gitlab.com/neutralfw/neutralts">Repository</a>.
+                Themes from <a href="https://bootswatch.com/">Bootswatch</a> and <a href="https://getbootstrap.com/" rel="nofollow">Bootstrap</a>.
+            </p>
+        </div>
+    </div>
+:}
+
+{:*
+    Icon page loading
+    -----------------
+*:}
+{:snip; current-theme-page-loading >>
+    <script>
+        $(window).bind('load', function () {
+            setTimeout(function(){
+                $('.page-is-loading').hide();
+                $('.page-has-loaded').show();
+            }, {:;CONTEXT->GET->simulate_spin:}{:else; 250 :});
+        });
+        $('a').on('click', function(e) {
+            var thisSite = window.location.origin;
+            if ($(this).attr("href")) {
+                if ($(this).attr("href").substring(0, 1) == "/" || $(this).attr("href").substring(0, 1) == "?" || $(this).attr("href").substring(0, thisSite.length) == thisSite) {
+                    if ($(this).attr("target") != "_blank") {
+                        $('.page-has-loaded').hide();
+                        $('.page-is-loading').show();
+                        $(window).bind('unload', function () {
+                            $('.page-is-loading').hide();
+                        });
+                        setTimeout(function(){
+                            $('.page-is-loading').hide();
+                            $('.page-has-loaded').show();
+                        }, 12000);
+                    }
+                }
+            }
+        });
+    </script>
+:}
+
+{:*
+    current-theme-spin
+    ------------------
+*:}
+{:snip; current-theme-spin-set-spin1 >>
+    {:snip; current-theme-spin >>
+        {:snip; spin-1x >>
+            <div class="spin spinner-grow spinner-grow-sm mx-1" role="status"></div>
+        :}
+        {:snip; spin-lg >>
+            <div class="spin spinner-grow spinner-grow mx-1" style="width: 1.2rem; height: 1.2rem;" role="status"></div>
+        :}
+        {:snip; spin-2x >>
+            <div class="spin spinner-grow spinner-grow mx-1" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+        :}
+        {:snip; spin-3x >>
+            <div class="spin spinner-grow spinner-grow mx-1" style="width: 1.8rem; height: 1.8rem;" role="status"></div>
+        :}
+        {:snip; spin-4x >>
+            <div class="spin spinner-grow spinner-grow mx-1" style="width: 2.2rem; height: 2.2rem;" role="status"></div>
+        :}
+        {:snip; spin-5x >>
+            <div class="spin spinner-grow spinner-grow mx-1" style="width: 2.7rem; height: 2.7rem;" role="status"></div>
+        :}
+    :}
+:}
+
+{:snip; current-theme-spin-set-spin2 >>
+    {:snip; current-theme-spin >>
+        {:snip; spin-1x >>
+            <div class="spin spinner-border spinner-border-sm mx-1" role="status"></div>
+        :}
+        {:snip; spin-lg >>
+            <div class="spin spinner-border spinner-border mx-1" style="width: 1.2rem; height: 1.2rem;" role="status"></div>
+        :}
+        {:snip; spin-2x >>
+            <div class="spin spinner-border spinner-border mx-1" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+        :}
+        {:snip; spin-3x >>
+            <div class="spin spinner-border spinner-border mx-1" style="width: 1.8rem; height: 1.8rem;" role="status"></div>
+        :}
+        {:snip; spin-4x >>
+            <div class="spin spinner-border spinner-border mx-1" style="width: 2.2rem; height: 2.2rem;" role="status"></div>
+        :}
+        {:snip; spin-5x >>
+            <div class="spin spinner-border spinner-border mx-1" style="width: 2.7rem; height: 2.7rem;" role="status"></div>
+        :}
+    :}
+:}
+
+{:snip; current-theme-spin-set-spin3 >>
+    {:snip; current-theme-spin >>
+        {:snip; spin-1x >>
+            <div class="spin spinner-border spinner-border-sm mx-1 border-bottom-0" role="status"></div>
+        :}
+        {:snip; spin-lg >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0" style="width: 1.2rem; height: 1.2rem;" role="status"></div>
+        :}
+        {:snip; spin-2x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+        :}
+        {:snip; spin-3x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0" style="width: 1.8rem; height: 1.8rem;" role="status"></div>
+        :}
+        {:snip; spin-4x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0" style="width: 2.2rem; height: 2.2rem;" role="status"></div>
+        :}
+        {:snip; spin-5x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0" style="width: 2.7rem; height: 2.7rem;" role="status"></div>
+        :}
+    :}
+:}
+
+{:snip; current-theme-spin-set-spin4 >>
+    {:snip; current-theme-spin >>
+        {:snip; spin-1x >>
+            <div class="spin spinner-border spinner-border-sm mx-1 border-bottom-0 border-start-0" role="status"></div>
+        :}
+        {:snip; spin-lg >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-start-0" style="width: 1.2rem; height: 1.2rem;" role="status"></div>
+        :}
+        {:snip; spin-2x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-start-0" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+        :}
+        {:snip; spin-3x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-start-0" style="width: 1.8rem; height: 1.8rem;" role="status"></div>
+        :}
+        {:snip; spin-4x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-start-0" style="width: 2.2rem; height: 2.2rem;" role="status"></div>
+        :}
+        {:snip; spin-5x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-start-0" style="width: 2.7rem; height: 2.7rem;" role="status"></div>
+        :}
+    :}
+:}
+
+{:snip; current-theme-spin-set-spin5 >>
+    {:snip; current-theme-spin >>
+        {:snip; spin-1x >>
+            <div class="spin spinner-border spinner-border-sm mx-1 border-bottom-0 border-top-0" role="status"></div>
+        :}
+        {:snip; spin-lg >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-top-0" style="width: 1.2rem; height: 1.2rem;" role="status"></div>
+        :}
+        {:snip; spin-2x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-top-0" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+        :}
+        {:snip; spin-3x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-top-0" style="width: 1.8rem; height: 1.8rem;" role="status"></div>
+        :}
+        {:snip; spin-4x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-top-0" style="width: 2.2rem; height: 2.2rem;" role="status"></div>
+        :}
+        {:snip; spin-5x >>
+            <div class="spin spinner-border spinner-border mx-1 border-bottom-0 border-top-0" style="width: 2.7rem; height: 2.7rem;" role="status"></div>
+        :}
+    :}
+:}
+
+{:snip; current-theme-spin-set-spin6 >>
+    {:snip; current-theme-spin >>
+        {:snip; spin-1x >>
+            <div class="spin spinner-border spinner-border-sm mx-1 border-start-0 border-end-0" role="status"></div>
+        :}
+        {:snip; spin-lg >>
+            <div class="spin spinner-border spinner-border mx-1 border-start-0 border-end-0" style="width: 1.2rem; height: 1.2rem;" role="status"></div>
+        :}
+        {:snip; spin-2x >>
+            <div class="spin spinner-border spinner-border mx-1 border-start-0 border-end-0" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+        :}
+        {:snip; spin-3x >>
+            <div class="spin spinner-border spinner-border mx-1 border-start-0 border-end-0" style="width: 1.8rem; height: 1.8rem;" role="status"></div>
+        :}
+        {:snip; spin-4x >>
+            <div class="spin spinner-border spinner-border mx-1 border-start-0 border-end-0" style="width: 2.2rem; height: 2.2rem;" role="status"></div>
+        :}
+        {:snip; spin-5x >>
+            <div class="spin spinner-border spinner-border mx-1 border-start-0 border-end-0" style="width: 2.7rem; height: 2.7rem;" role="status"></div>
+        :}
+    :}
+:}
+
+{:*
+    Set default spinner.
+*:}
+{:snip; current-theme-spin-set-spin1 :}
+
+{:*
+    Reload page JS spiner
+*:}
+{:snip; reload-self-js-spiner >>
+    <div class="text-center text-muted p-5 m-5">{:snip; spin-3x :}</div>
+    <script>
+        setTimeout( function() {
+            window.history.pushState("", document.title, window.location.pathname);
+            self.location.href=self.location.href.split('#')[0].split('?')[0];
+        }, 100);
+    </script>
+:}
+
+{:*
+    Theme workaround
+    ----------------
+*:}
+
+{:snip; current-theme-workaround-css:lux >>
+    <style>
+        @media (max-width: 767px) {
+            .input-group-text {
+                padding: .75rem .85rem;
+            }
+        }
+    </style>
+:}
+
+{:snip; current-theme-workaround-css:materia >>
+    <style>
+        .input-group-text {
+            padding: .75rem .85rem;
+        }
+    </style>
+:}
+
+{:snip; current-theme-workaround-css:litera >>
+    <style>
+        @media (max-width: 767px) {
+            .input-group-text {
+                padding: .5rem .9rem;
+            }
+        }
+    </style>
+:}
+
+{:snip; current-theme-workaround-css:journal >>
+    <style>
+        .nav-brand-text {
+            margin-bottom: 6px;
+        }
+    </style>
+:}
+
+{:snip; current-theme-workaround-css:sketchy >>
+    <style>
+        .nav-brand-text {
+            margin-bottom: -4px;
+        }
+        .form-check-input {
+            padding: .50rem .50rem;
+        }
+    </style>
+:}
+
+{:*
+    jquery
+*:}
+{:snip; script-jquery >>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+:}
+
+{:*
+    Default theme
+*:}
+{:snip; theme >>
+    sketchy
+:}
+
+{:*
+    Theme css
+*:}
+{:snip; current-theme-css >>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/{:snip; theme :}/bootstrap.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+:}
+
+{:*
+    Theme js
+*:}
+{:snip; current-theme-js >>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+:}
+
+{:*
+    Custom css
+*:}
+{:snip; neutral-style-bt5 >>
+    <link rel="stylesheet" href="/css/neutral-custom.css" />
+:}
+
+{:*
+    https://highlightjs.org/
+*:}
+{:snip; highlight-js >>
+    {:moveto; </head >>
+        {:^;:} {:* <-- unnecessary, just for nice output *:}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css" integrity="sha512-hasIneQUHlh06VNBe7f6ZcHmeRTLIaQWFd43YriJ0UND19bvYRauxthDg8E4eVNPm9bRUhr5JGeqH7FRFXQu5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {:;:} {:* <-- unnecessary, just for nice output *:}
+    :}
+    {:moveto; </body >>
+        {:^;:} {:* <-- unnecessary, just for nice output *:}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" integrity="sha512-EBLzUL8XLl+va/zAsmXwS7Z2B1F9HUHkZwyS/VKwh3S7T/U0nF4BaU29EP/ZSf6zgiIxYAnKLu6bJ8dqpmX5uw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>hljs.highlightAll();</script>
+    {:;:} {:* <-- unnecessary, just for nice output *:}
+    :}
+:}
+
+{:*
+    service-worker for PWA
+*:}
+{:snip; service-worker.js >>
+    <script>
+        window.addEventListener('load', function() {
+            if ('serviceWorker' in navigator) {
+                serviceWorkerReg = navigator.serviceWorker.register('/service-worker.js');
+            } else {
+                serviceWorkerReg = false;
+            }
+        });
+        window.addEventListener('load', function() {
+            if ('serviceWorker' in navigator) {
+                var deferredPrompt;
+                const addAsPwa = document.querySelector('.add-as-pwa');
+                addAsPwa.style.display = 'none';
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    addAsPwa.style.display = 'block';
+                    addAsPwa.addEventListener('click', (e) => {
+                        addAsPwa.style.display = 'none';
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('User accepted the A2HS prompt');
+                            } else {
+                                console.log('User dismissed the A2HS prompt');
+                            }
+                            deferredPrompt = null;
+                        });
+                    });
+                });
+            }
+        });
+    </script>
+:}
+
+{:snip; neutral.js >>
+    <script>
+        var neutral_submit_loading = '{:snip; spin-1x :}';
+        var neutral_submit_timeout = 9000;
+        var neutral_submit_error = ' {:trans; Form ERROR! :} ';
+        var neutral_submit_error_delay = 5500;
+        var neutral_submit_delay = 400;
+        window.addEventListener('neutralFetchCompleted', function(evt) {
+            if (!evt.detail.url.includes('://')) {
+                const scriptContainer = evt.detail.element.querySelector('.script-container');
+                if (scriptContainer) {
+                    const scripts = scriptContainer.querySelectorAll('script');
+                    scripts.forEach(script => {
+                        const newScript = document.createElement('script');
+                        newScript.text = script.textContent;
+                        document.body.appendChild(newScript);
+                    });
+                }
+            }
+        });
+    </script>
+    <script src="/js/neutral.min.js"></script>
+:}

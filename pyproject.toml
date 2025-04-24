@@ -1,0 +1,26 @@
+[build-system]
+requires = ["maturin>=1.8,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "neutraltemplate"
+description = "Neutralts template engine for the Web, python package"
+readme = "README.md"
+license = "Apache License 2.0"
+keywords = ["template-engine", "web", "jinja2", "flask"]
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+[tool.maturin]
+features = ["pyo3/extension-module"]
+
+[project.urls]
+Homepage = "https://crates.io/crates/neutralts"
+Documentation = "https://docs.rs/neutralts/"
+Repository = "https://github.com/FranBar1966/neutraltemplate"
+Rust = "https://github.com/FranBar1966/neutraltemplate/blob/master/src/lib.rs"
+Issues = "https://github.com/FranBar1966/neutraltemplate/issues"

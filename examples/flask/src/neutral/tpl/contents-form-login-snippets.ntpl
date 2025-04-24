@@ -1,0 +1,9 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:!bool; CONTEXT->HEADERS->Requested-With-Ajax >>
+    {:redirect; js:redirect:top >> / :}
+:}
+
+{:snip; current-theme-body-content >>
+    {:snip; current-theme-login-form :}
+:}

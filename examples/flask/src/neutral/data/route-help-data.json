@@ -1,0 +1,12 @@
+{
+    "data": {
+        "currentRoute": {
+            "title": "Help",
+            "description": "Example of using Neutral TS help page",
+            "icon": "icon-help",
+            "meta": {
+                "name1": "content1"
+            }
+        }
+    }
+}

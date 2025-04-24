@@ -1,0 +1,122 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    fontawesome icons
+    -----------------
+*:}
+
+{:snippet; current-theme-icons-css >>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+:}
+
+{:snippet; icon-help >>
+    x-icon fa-fw fa-regular fa-circle-question
+:}
+
+{:snippet; icon-error >>
+    x-icon fa-fw fa-solid fa-triangle-exclamation
+:}
+
+{:snippet; icon-trash >>
+    x-icon fa-fw fa-regular fa-trash-can
+:}
+
+{:snippet; icon-cookies >>
+    x-icon fa-fw fa-solid fa-cookie-bite
+:}
+
+{:snippet; icon-send >>
+    x-icon fa-fw fa-regular fa-paper-plane
+:}
+
+{:snippet; icon-save >>
+    x-icon fa-fw fa-regular fa-floppy-disk
+:}
+
+{:snippet; icon-back >>
+    x-icon fa-fw fa-solid fa-arrow-left
+:}
+
+{:snippet; icon-close >>
+    x-icon fa-fw fa-solid fa-xmark
+:}
+
+{:snippet; icon-remove >>
+    x-icon fa-fw fa-solid fa-xmark
+:}
+
+{:snippet; icon-add >>
+    x-icon fa-fw fa-solid fa-plus
+:}
+
+{:snippet; icon-check >>
+    x-icon fa-fw fa-solid fa-check
+:}
+
+{:snippet; icon-home >>
+    x-icon fa-fw fa-solid fa-house
+:}
+
+{:snippet; icon-menu >>
+    x-icon fa-fw fa-solid fa-bars
+:}
+
+{:snippet; icon-up >>
+    x-icon fa-fw fa-solid fa-chevron-up
+:}
+
+{:snippet; icon-down >>
+    x-icon fa-fw fa-solid fa-chevron-down
+:}
+
+{:snippet; icon-right >>
+    x-icon fa-fw fa-solid fa-chevron-right
+:}
+
+{:snippet; icon-left >>
+    x-icon fa-fw fa-solid fa-chevron-left
+:}
+
+{:snippet; icon-email >>
+    x-icon fa-fw fa-regular fa-envelope
+:}
+
+{:snippet; icon-user-login >>
+    x-icon fa-fw fa-solid fa-at
+:}
+
+{:snippet; icon-user-password >>
+    x-icon fa-fw fa-solid fa-key
+:}
+
+{:snippet; icon-sign-reminder >>
+    x-icon fa-fw fa-solid fa-person-circle-question
+:}
+
+{:snippet; icon-sign-in >>
+    x-icon fa-fw fa-solid fa-arrow-right-to-bracket
+:}
+
+{:snippet; icon-sign-off >>
+    x-icon fa-fw fa-solid fa-arrow-right-from-bracket
+:}
+
+{:snippet; icon-sign-up >>
+    x-icon fa-fw fa-solid fa-user-plus
+:}
+
+{:snippet; icon-user >>
+    x-icon fa-fw fa-regular fa-user
+:}
+
+{:snippet; icon-channel >>
+    x-icon fa-fw fa-solid fa-bullhorn
+:}
+
+{:snippet; icon-locale >>
+    x-icon fa-fw fa-solid fa-language
+:}
+
+{:snippet; icon-edit >>
+    x-icon fa-fw fa-regular fa-pen-to-square
+:}

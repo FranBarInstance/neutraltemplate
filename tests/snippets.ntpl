@@ -1,0 +1,147 @@
+{:*
+    tests snippets
+*:}
+
+{:snippet; test-snippet >>
+    <div>test snippet</div>
+:}
+
+{:snippet; test-snippet-{:;__test-nts:} >>
+    <div>test snippet {:;__test-nts:}</div>
+:}
+
+{:+code;
+    {:snippet; test-snippet-code >>
+        <div>test snippet code</div>
+    :}
+:}
+
+{:snippet; test-snippet-nested >>
+    {:snippet; test-snippet-nested-next >>
+        <div>test snippet nested</div>
+    :}
+:}
+
+{:snippet; big-coalesce >>
+    {:coalesce;
+        {:;none:}
+        {:code;  :}
+        {:code; OK1 :}
+        {:code; NO 1a :}
+        {:code; NO 1b :}
+    :}{:coalesce;
+        {:;none:}
+        {:code; {:code; -Ok2 :} :}
+        {:code; NO 2a :}
+        {:code; NO 2b :}
+    :}{:coalesce;
+        {:;none:}
+        {:code; {:code; {:code; {:code; -Ok3 :} :} :} :}
+        {:code; NO 3a :}
+        {:code; NO 3b :}
+    :}{:coalesce;
+        {:;none:}
+        {:coalesce;
+            {:;none:}
+            {:code; -Ok4 :}
+            {:code; NO 4a :}
+        :}
+        {:code; NO 4b :}
+        {:code; NO 4c :}
+    :}{:coalesce;
+        {:;none:}
+        {:code;
+            {:coalesce;
+                {:;none:}
+                {:coalesce;
+                    {:;none:}
+                    {:code;
+                        {:coalesce;
+                            {:;none:}
+                            {:code; -Ok5 :}
+                            {:code; NO 5a :}
+                        :}
+                    :}
+                    {:code; NO 5b :}
+                    {:code; NO 5c :}
+                :}
+                {:code; NO 5d :}
+                {:code; NO 5c :}
+            :}
+        :}
+        {:code;  :}
+        {:code; {:code; NO 5e :} :}
+        {:code; NO 5f :}
+        {:code; NO 5g :}
+    :}{:coalesce;
+        {:;none:}
+        {:coalesce;
+            {:;none:}
+            {:coalesce;
+                {:;none:}
+                {:code; -Ok6 :}
+                {:code; NO 6a :}
+            :}
+            {:code; NO 6b :}
+            {:code; NO 6c :}
+        :}
+        {:code;  :}
+        {:code; {:code; NO 6d :} :}
+        {:code; NO 6e :}
+        {:code; NO 6f :}
+    :}
+:}
+
+{:declare; test-for-tests >> one two three :}
+
+{:snippet; iterate-array >>
+    {:^each; {:param; array-name :} key value >>
+    {:;:}
+        {:array; value >>
+            {:;key:}:
+            {:^each; {:param; array-name :}->{:;key:} key1 value1 >>
+            {:;:}
+                {:array; value1 >>
+                    {:;key1:}:
+                    {:^each; {:param; array-name :}->{:;key:}->{:;key1:} key2 value2 >>
+                    {:;:}
+                        {:array; value2 >>
+                            {:;key2:}:
+                            {:^each; {:param; array-name :}->{:;key:}->{:;key1:}->{:;key2:} key3 value3 >>
+                            {:;:}
+                                {:array; value3 >>
+                                    {:;key3:}:
+                                    {:^each; {:param; array-name :}->{:;key:}->{:;key1:}->{:;key2:}->{:;key3:} key4 value4 >>
+                                    {:;:}
+                                        {:array; value4 >>
+                                            {:;key4:}:
+                                            {:^each; {:param; array-name :}->{:;key:}->{:;key1:}->{:;key2:}->{:;key3:}->{:;key4:} key5 value5 >>
+                                            {:;:}
+                                                {:array; value5 >>
+                                                    {:;key5:}:
+                                                    {:;key5:}={:;value5:}
+                                                :}{:else;
+                                                    {:;key5:}={:;value5:}
+                                                :}
+                                            :}
+                                        :}{:else;
+                                            {:;key4:}={:;value4:}
+                                        :}
+                                    :}
+                                :}{:else;
+                                    {:;key3:}={:;value3:}
+                                :}
+                            :}
+                        :}{:else;
+                            {:;key2:}={:;value2:}
+                        :}
+                    :}
+                :}{:else;
+                    {:;key1:}={:;value1:}
+                :}
+            :}
+        :}{:else;
+            {:;key:}={:;value:}
+        :}
+    :}
+:}

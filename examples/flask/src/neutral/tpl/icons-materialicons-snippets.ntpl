@@ -1,0 +1,234 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    icons materialicons
+    -------------------
+*:}
+
+{:snippet; current-theme-icons-css >>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.0.96/css/materialdesignicons.min.css" integrity="sha512-fXnjLwoVZ01NUqS/7G5kAnhXNXat6v7e3M9PhoMHOTARUMCaf5qNO84r5x9AFf5HDzm3rEZD8sb/n6dZ19SzFA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+:}
+
+{:snippet; icon-help >>
+    x-icon mdi mdi-help-circle-outline
+:}
+
+{:snippet; icon-bullet >>
+    x-icon mdi mdi-circle-small
+:}
+
+{:snippet; icon-theme-edit >>
+    x-icon mdi mdi-monitor-edit
+:}
+
+{:snippet; icon-error >>
+    x-icon mdi mdi-alert-circle-outline
+:}
+
+{:snippet; icon-alert >>
+    x-icon mdi mdi-alert-rhombus-outline
+:}
+
+{:snippet; icon-trash >>
+    x-icon mdi mdi-trash-can-outline
+:}
+
+{:snippet; icon-cookies >>
+    x-icon mdi mdi-cookie-outline
+:}
+
+{:snippet; icon-send >>
+    x-icon mdi mdi-send-outline
+:}
+
+{:snippet; icon-save >>
+    x-icon mdi mdi-content-save-outline
+:}
+
+{:snippet; icon-back >>
+    x-icon mdi mdi-arrow-left
+:}
+
+{:snippet; icon-close >>
+    x-icon mdi mdi-window-close
+:}
+
+{:snippet; icon-remove >>
+    x-icon mdi mdi-close
+:}
+
+{:snippet; icon-add >>
+    x-icon mdi mdi-plus
+:}
+
+{:snippet; icon-plus >>
+    x-icon mdi mdi-plus
+:}
+
+{:snippet; icon-check >>
+    x-icon mdi mdi-check
+:}
+
+{:snippet; icon-home >>
+    x-icon mdi mdi-home-outline
+:}
+
+{:snippet; icon-menu >>
+    x-icon mdi mdi-menu
+:}
+
+{:snippet; icon-site-config >>
+    x-icon mdi mdi-application-cog-outline
+:}
+
+{:snippet; icon-invite-code >>
+    x-icon mdi mdi-door-closed-lock
+:}
+
+{:snippet; icon-up >>
+    x-icon mdi mdi-chevron-up
+:}
+
+{:snippet; icon-down >>
+    x-icon mdi mdi-chevron-down
+:}
+
+{:snippet; icon-right >>
+    x-icon mdi mdi-chevron-right
+:}
+
+{:snippet; icon-left >>
+    x-icon mdi mdi-chevron-left
+:}
+
+{:snippet; icon-at >>
+    x-icon mdi mdi-at
+:}
+
+{:snippet; icon-email >>
+    x-icon mdi mdi-email-variant
+:}
+
+{:snippet; icon-sign >>
+    x-icon mdi mdi-account-circle-outline
+:}
+
+{:snippet; icon-profile >>
+    x-icon mdi mdi-account-edit-outline
+:}
+
+{:snippet; icon-user-login >>
+    x-icon mdi mdi-at
+:}
+
+{:snippet; icon-user-password >>
+    x-icon mdi mdi-key-outline
+:}
+
+{:snippet; icon-verify >>
+    x-icon mdi mdi-key-link
+:}
+
+{:snippet; icon-pin >>
+    x-icon mdi mdi-shield-key-outline
+:}
+
+{:snippet; icon-user-alias >>
+    x-icon mdi mdi-badge-account-outline
+:}
+
+{:snippet; icon-sign-reminder >>
+    x-icon mdi mdi-account-question-outline
+:}
+
+{:snippet; icon-sign-in >>
+    x-icon mdi mdi-login
+:}
+
+{:snippet; icon-sign-off >>
+    x-icon mdi mdi-logout
+:}
+
+{:snippet; icon-sign-up >>
+    x-icon mdi mdi-account-plus-outline
+:}
+
+{:snippet; icon-user >>
+    x-icon mdi mdi-account-outline
+:}
+
+{:snippet; icon-users >>
+    x-icon mdi mdi-account-supervisor-circle-outline
+:}
+
+{:snippet; icon-subscriptions >>
+    x-icon mdi mdi-card-account-mail-outline
+:}
+
+{:snippet; icon-channel >>
+    x-icon mdi mdi-broadcast
+:}
+
+{:snippet; icon-locale >>
+    x-icon mdi mdi-translate
+:}
+
+{:snippet; icon-edit >>
+    x-icon mdi mdi-square-edit-outline
+:}
+
+{:snippet; icon-lock >>
+    x-icon mdi mdi-lock-outline
+:}
+
+{:snippet; icon-unlock >>
+    x-icon mdi mdi-lock-open-variant-outline
+:}
+
+{:snippet; icon-file >>
+    x-icon mdi mdi-file-outline
+:}
+
+{:snippet; icon-files >>
+    x-icon mdi mdi-file-multiple-outline
+:}
+
+{:snippet; icon-image >>
+    x-icon mdi mdi-image-outline
+:}
+
+{:snippet; icon-images >>
+    x-icon mdi mdi-image-multiple-outline
+:}
+
+{:snippet; icon-web >>
+    x-icon mdi mdi-web
+:}
+
+{:snippet; icon-landing >>
+    x-icon mdi mdi-airplane-landing
+:}
+
+{:snippet; icon-app >>
+    x-icon mdi mdi-cellphone-text
+:}
+
+{:snippet; icon-webapp >>
+    x-icon mdi mdi-monitor-cellphone
+:}
+
+{:snippet; icon-brightness >>
+    x-icon mdi mdi-brightness-6
+:}
+
+{:snippet; icon-legal >>
+    x-icon mdi mdi-scale-balance
+:}
+
+{:snippet; icon-form >>
+    x-icon mdi mdi-form-select
+:}
+
+{:snippet; icon-web >>
+    x-icon mdi mdi-web
+:}

@@ -1,0 +1,84 @@
+{:* Neutral TS - License in the terms described in the LICENSE file. *:}
+
+{:*
+    Template
+    --------
+
+    The content or tags that do not change are written literally, for the
+    rest you use snipepts, you can see the snippet as functions, you define
+    them and then invoke them.
+
+    Documentation of Neutral's language elements can be found here:
+    https://docs.rs/neutralts/latest/neutralts/doc/
+
+    We have made different divisions with snippet for content, but different
+    situations may require a different approach.
+*:}
+
+{:*
+    {:^;:} will make <!DOCTYPE html> appear on the first line removing all spaces.
+*:}
+{:^;:}<!DOCTYPE html>
+<html lang="{:lang;:}">
+    <head>
+        <script>var neutralThemeSpin1x = '{:snip; spin-1x :}'; var neutralThemeSpinlg = '{:snip; spin-lg :}'; var neutralThemeSpin2x = '{:snip; spin-2x :}'; var neutralThemeSpin3x = '{:snip; spin-3x :}'; var neutralThemeSpin4x = '{:snip; spin-4x :}';</script>
+        <title>{:trans; {:;local::currentRoute->title:} :}</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="generator" content="Neutral TS"/>
+        <meta name="application-name" content="Neutral TS">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="theme-color" content="#375A7F">
+        <meta name="msapplication-TileColor" content="#375A7F" />
+        <meta name="background-color" content="#ffffff">
+        <meta name="apple-mobile-web-app-title" content="Neutral TS">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <link href="/pwa/32.png"  rel="icon" type="image/png" sizes="32x32">
+        <link href="/pwa/192.png" rel="icon" type="image/png" sizes="192x192">
+        <link href="/pwa/512.png" rel="icon" type="image/png" sizes="512x512">
+        <link rel="manifest" href="/pwa/manifest.json">
+        {:;:}
+        {:^defined; local::currentRoute->robots >>
+            <meta name="robots" content="{:;local::currentRoute->robots:}"/>
+        :}
+        {:^each; local::currentRoute->meta name content >>
+            <meta name="{:;name:}" content="{:;content:}"/>
+        {:;:}
+        :}
+
+        {:*
+            The order matters because some overwrite options.
+        *:}
+        {:^snippet; current-theme-icons-css :}
+        {:snip; current-theme-css :}
+        {:snip; neutral-style-bt5 :}
+        {:snip; current-theme-heading :}
+        {:snip; current-theme-workaround-css:{:snip; theme :} :}
+        <style>
+            .forms-bt5-form *:not(.form-check-input):not(.alert):not(.spin) {
+                border-right: none !important;
+                border-left: none !important;
+                border-top: none !important;
+            }
+            .forms-bt5-form .input-group-text {
+                background-color: transparent !important;
+            }
+        </style>
+    </head>
+    <body class="{:snip; current-theme-body-class :}">
+        {:snip; current-theme-body-begin :}
+        {:snip; current-theme-body-navbar :}
+        {:snip; current-theme-body-carousel :}
+        {:snip; current-theme-body-content :}
+        {:snip; current-theme-body-end :}
+        {:snip; current-theme-body-footer :}
+        {:snip; script-jquery :}
+        {:snip; current-theme-js :}
+        {:snip; current-theme-page-loading :}
+        {:snip; current-theme-login-form-modal :}
+        {:snip; set-cookies :}
+        {:snip; neutral.js :}
+        {:snip; service-worker.js :}
+    </body>
+</html>
