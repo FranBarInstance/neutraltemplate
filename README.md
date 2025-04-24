@@ -13,6 +13,8 @@ pip install neutraltemplate
 Usage
 -----
 
+See: [Web APP example](https://github.com/FranBar1966/neutraltemplate/tree/master/examples)
+
 ```
 from neutraltemplate import NeutralTemplate
 
@@ -84,5 +86,3 @@ status_param = template.get_status_param()
 # act accordingly at this point according to your framework
 
 ```
-
-See: [example](https://github.com/FranBar1966/neutraltemplate/tree/master/examples)
