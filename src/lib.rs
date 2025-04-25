@@ -64,6 +64,7 @@ impl NeutralTemplate {
         self.status_code = template.get_status_code().clone();
         self.status_text = template.get_status_text().clone();
         self.status_param = template.get_status_param().clone();
+        self.has_error = template.has_error();
 
         Ok(contents)
     }
