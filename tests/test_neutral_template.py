@@ -314,7 +314,7 @@ class TestNeutralTemplate(unittest.TestCase):
         self.assertEqual(template.get_status_param(), "")
 
     def test_has_error_parse_false(self):
-        """Test initialization set source and schema."""
+        """Test get error parse false"""
 
         template = NeutralTemplate()
         template.set_source("{:;__hello-nts:}")
@@ -327,7 +327,7 @@ class TestNeutralTemplate(unittest.TestCase):
         self.assertEqual(template.get_status_param(), "")
 
     def test_has_error_parse_true(self):
-        """Test initialization set source and schema."""
+        """Test get error parse true"""
 
         template = NeutralTemplate()
         template.set_source("{:force-error;__hello-nts:}")
