@@ -1,6 +1,6 @@
 [package]
 name = "neutraltemplate"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 
 [lib]
@@ -9,5 +9,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = "0.24.0"
-neutralts = "1.2.9"
+neutralts = "1.2.10"
 serde_json = "1.0"
