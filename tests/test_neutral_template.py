@@ -313,6 +313,32 @@ class TestNeutralTemplate(unittest.TestCase):
         self.assertEqual(template.get_status_text(), "OK")
         self.assertEqual(template.get_status_param(), "")
 
+    def test_has_error_parse_false(self):
+        """Test initialization set source and schema."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;__hello-nts:}")
+        contents = template.render()
+
+        self.assertEqual(contents, "Hello nts")
+        self.assertEqual(template.has_error(), False)
+        self.assertEqual(template.get_status_code(), "200")
+        self.assertEqual(template.get_status_text(), "OK")
+        self.assertEqual(template.get_status_param(), "")
+
+    def test_has_error_parse_true(self):
+        """Test initialization set source and schema."""
+
+        template = NeutralTemplate()
+        template.set_source("{:force-error;__hello-nts:}")
+        contents = template.render()
+
+        self.assertEqual(contents, "")
+        self.assertEqual(template.has_error(), True)
+        self.assertEqual(template.get_status_code(), "200")
+        self.assertEqual(template.get_status_text(), "OK")
+        self.assertEqual(template.get_status_param(), "")
+
     def test_initialization_with_invalid_file(self):
         """Test initialization fails with invalid file."""
 
