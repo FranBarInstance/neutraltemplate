@@ -1,5 +1,5 @@
 [build-system]
-requires = ["maturin>=1.8,<2.0"]
+requires = ["maturin>=1.9,<2.0"]
 build-backend = "maturin"
 
 [project]
@@ -19,8 +19,8 @@ dynamic = ["version"]
 features = ["pyo3/extension-module"]
 
 [project.urls]
-Homepage = "https://crates.io/crates/neutralts"
-Documentation = "https://docs.rs/neutralts/"
-Repository = "https://github.com/FranBar1966/neutraltemplate"
-Rust = "https://github.com/FranBar1966/neutraltemplate/blob/master/src/lib.rs"
-Issues = "https://github.com/FranBar1966/neutraltemplate/issues"
+Homepage = "https://github.com/FranBarInstance/neutralts"
+Documentation = "https://franbarinstance.github.io/neutralts-docs/docs/neutralts/"
+Repository = "https://github.com/FranBarInstance/neutraltemplate"
+Rust = "https://crates.io/crates/neutralts"
+Issues = "https://github.com/FranBarInstance/neutraltemplate/issues"
