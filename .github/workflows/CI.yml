@@ -92,17 +92,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"  # Use a stable version for sdist
-          allow-prereleases: false
-      - name: Verify Python version
-        run: python --version
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist -i python3.10
+          args: --out dist
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
