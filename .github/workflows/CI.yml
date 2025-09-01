@@ -63,12 +63,10 @@ jobs:
           path: dist
 
   macos:
-    runs-on: ${{ matrix.runner }}
+    runs-on: macos-latest
     strategy:
       matrix:
-        runner: [macos-13, macos-14]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
-        target: [x86_64, aarch64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -77,15 +75,14 @@ jobs:
           allow-prereleases: false
       - name: Verify Python version
         run: python --version
-      - name: Build wheels
+      - name: Build universal2 wheels
         uses: PyO3/maturin-action@v1
         with:
-          target: ${{ matrix.target }}
-          args: --release --out dist -i python${{ matrix.python-version }}
+          args: --release --out dist --universal2
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-macos-${{ matrix.target }}-py${{ matrix.python-version }}
+          name: wheels-macos-universal2-py${{ matrix.python-version }}
           path: dist
 
   sdist:
