@@ -42,6 +42,7 @@ TEMPLATE_CACHE = """
     {:^;:}{:replace; /{:;__test-nts:}/{:;__test-arr-nts->0:}/ >> {:;__hello-nts:} :}
     {:^;:}{:same; /{:;__test-nts:}/{:;__test-nts:}/ >> {:;__test-nts:} :}
     {:^;:}{:trans; {:trans; Hello nts :} :}
+    {:^;:}{:obj; tests/obj.json :}
     {:^cache; /3/ >>
         {:^;:}::--::{:^date; %S :}::--::
         {:^;:}{:sum; /{:;one:}/{:;one:}/ :}
@@ -72,6 +73,7 @@ TEMPLATE_CACHE = """
         {:^;:}{:replace; /{:;__test-nts:}/{:;__test-arr-nts->0:}/ >> {:;__hello-nts:} :}
         {:^;:}{:same; /{:;__test-nts:}/{:;__test-nts:}/ >> {:;__test-nts:} :}
         {:^;:}{:trans; {:trans; Hello nts :} :}
+        {:^;:}{:obj; tests/obj.json :}
         {:!cache;
             {:^;:}::--::{:^date; %S :}::--::
             {:^;:}{:sum; /{:;one:}/{:;one:}/ :}
@@ -102,6 +104,7 @@ TEMPLATE_CACHE = """
             {:^;:}{:replace; /{:;__test-nts:}/{:;__test-arr-nts->0:}/ >> {:;__hello-nts:} :}
             {:^;:}{:same; /{:;__test-nts:}/{:;__test-nts:}/ >> {:;__test-nts:} :}
             {:^;:}{:trans; {:trans; Hello nts :} :}
+            {:^;:}{:obj; tests/obj.json :}
         :}
     :}
 """.strip()
@@ -372,7 +375,7 @@ class TestNeutralTemplate(unittest.TestCase):
         template.set_source(TEMPLATE_CACHE)
         template.merge_schema(SCHEMA2)
         contents = template.render()
-        expected = "2<div id=\"\" class=\"neutral-fetch-auto \" data-url=\"/url\" data-wrap=\"\">\n    loading...\n</div>one|two|threeHello ntsHello nts0one1two2threetrueHello ntsHello ntscontainsis definedelsentsis filled01234567895c96e4f24ce6e234e6bd4df066748030en{:neutral; {:;__test-nts:} >> {:;__test-nts:} :}1Hello onentsHello"
+        expected = "2<div id=\"\" class=\"neutral-fetch-auto \" data-url=\"/url\" data-wrap=\"\">\n    loading...\n</div>one|two|threeHello ntsHello nts0one1two2threetrueHello ntsHello ntscontainsis definedelsentsis filled01234567895c96e4f24ce6e234e6bd4df066748030en{:neutral; {:;__test-nts:} >> {:;__test-nts:} :}1Hello onentsHelloPython Obj"
 
         result_write_parts = contents.split("::--::")
         self.assertEqual(result_write_parts[0], "<div1>1nts</div1><div2>2nts</div2><div3>3nts</div3>")

@@ -1,0 +1,8 @@
+{
+    "engine": "Python",
+    "file": "tests/obj.py",
+    "params": {
+        "param1": "Python Obj"
+    },
+    "template": "tests/obj.ntpl"
+}
