@@ -344,8 +344,12 @@ class TestNeutralTemplate(unittest.TestCase):
 
         template = NeutralTemplate(TEMPLATE_ERROR)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(RuntimeError) as context:
             template.render()
+
+        error_message = str(context.exception)
+        self.assertIn("No such file or directory", error_message)
+        self.assertIn("os error 2", error_message)
 
     def test_initialization_with_invalid_schema(self):
         """Test initialization fails with invalid JSON schema."""
