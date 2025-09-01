@@ -21,13 +21,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
+          allow-prereleases: false
+      - name: Verify Python version
+        run: python --version
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist
-          manylinux: auto
+          args: --release --out dist -i python${{ matrix.python-version }}
+          manylinux: manylinux_2_28
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -45,13 +47,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
+          allow-prereleases: false
           architecture: x64
+      - name: Verify Python version
+        run: python --version
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist
+          args: --release --out dist -i python${{ matrix.python-version }}
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -70,12 +74,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          allow-prereleases: true
+          allow-prereleases: false
+      - name: Verify Python version
+        run: python --version
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist
+          args: --release --out dist -i python${{ matrix.python-version }}
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -86,11 +92,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"  # Use a stable version for sdist
+          allow-prereleases: false
+      - name: Verify Python version
+        run: python --version
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
           command: sdist
-          args: --out dist
+          args: --out dist -i python3.10
       - name: Upload sdist
         uses: actions/upload-artifact@v4
         with:
