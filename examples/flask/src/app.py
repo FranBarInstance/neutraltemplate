@@ -10,8 +10,9 @@
 # "validRoutes" is an arbitrary name, the template verifies that there is a key to a route.
 
 import os
-from flask import Flask, request, send_from_directory
+
 from constants import STATIC_FOLDER
+from flask import Flask, request, send_from_directory
 from schema import Schema
 from template import Template
 
