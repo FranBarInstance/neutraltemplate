@@ -13,7 +13,7 @@ pip install neutraltemplate
 Usage
 -----
 
-See: [Web APP example](https://github.com/FranBarInstance/neutraltemplate/tree/master/examples)
+See: [examples](https://github.com/FranBarInstance/neutralts-docs/tree/master/examples/python)
 
 ```
 from neutraltemplate import NeutralTemplate
@@ -94,4 +94,4 @@ Neutral TS template engine Python Package.
 - [Repository](https://github.com/FranBarInstance/neutraltemplate)
 - [Crate](https://crates.io/crates/neutralts)
 - [PYPI Package](https://pypi.org/project/neutraltemplate/)
-- [Examples](https://github.com/FranBarInstance/neutraltemplate/tree/master/examples)
+- [Examples](https://github.com/FranBarInstance/neutralts-docs/tree/master/examples/python)
