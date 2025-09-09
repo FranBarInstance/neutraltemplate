@@ -258,7 +258,7 @@ dependencies = [
 
 [[package]]
 name = "neutraltemplate"
-version = "1.3.0-beta.5.post1"
+version = "1.3.0-beta.6.post1"
 dependencies = [
  "neutralts",
  "pyo3",
@@ -267,9 +267,9 @@ dependencies = [
 
 [[package]]
 name = "neutralts"
-version = "1.3.0-beta5"
+version = "1.3.0-beta6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "507eaabf43e0dce85e96fb29c71cb7ff5dd854fefd4299e16ae66cbd45fccb55"
+checksum = "fdc36ed1960ce7824d4fd62f3b016738c4524e5eb239fdef050ff9788ae849ac"
 dependencies = [
  "chrono",
  "lazy_static",
