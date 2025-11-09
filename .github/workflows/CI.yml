@@ -62,52 +62,6 @@ jobs:
           name: wheels-windows-${{ matrix.target }}-py${{ matrix.python-version }}
           path: dist
 
-  macos:
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      matrix:
-        include:
-          - runner: macos-14-large
-            target: x86_64
-            python-version: "3.10"
-          - runner: macos-14-large
-            target: x86_64
-            python-version: "3.11"
-          - runner: macos-14-large
-            target: x86_64
-            python-version: "3.12"
-          - runner: macos-14-large
-            target: x86_64
-            python-version: "3.13"
-          - runner: macos-14
-            target: aarch64
-            python-version: "3.10"
-          - runner: macos-14
-            target: aarch64
-            python-version: "3.11"
-          - runner: macos-14
-            target: aarch64
-            python-version: "3.12"
-          - runner: macos-14
-            target: aarch64
-            python-version: "3.13"
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          allow-prereleases: false
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          target: ${{ matrix.target }}
-          args: --release --out dist -i python${{ matrix.python-version }}
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-macos-${{ matrix.target }}-py${{ matrix.python-version }}
-          path: dist
-
   sdist:
     runs-on: ubuntu-latest
     steps:
@@ -127,7 +81,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
-    needs: [linux, windows, macos, sdist]
+    needs: [linux, windows, sdist]
     permissions:
       id-token: write
       contents: write
