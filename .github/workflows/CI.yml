@@ -1,3 +1,7 @@
+# CI workflow to build Python wheels for Linux and Windows across multiple Python versions.
+# Triggered on tag pushes for releases or manually via workflow_dispatch.
+# Builds binary wheels and source distribution, then publishes to PyPI on tagged releases.
+
 name: CI
 
 on:
