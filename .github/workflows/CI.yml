@@ -67,16 +67,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - runner: macos-13
+          - runner: macos-14-large
             target: x86_64
             python-version: "3.10"
-          - runner: macos-13
+          - runner: macos-14-large
             target: x86_64
             python-version: "3.11"
-          - runner: macos-13
+          - runner: macos-14-large
             target: x86_64
             python-version: "3.12"
-          - runner: macos-13
+          - runner: macos-14-large
             target: x86_64
             python-version: "3.13"
           - runner: macos-14
