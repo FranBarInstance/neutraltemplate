@@ -33,6 +33,8 @@ enum BaseSchema {
     None,
     /// Schema as JSON Value.
     Json(Value),
+    /// Schema as JSON string (validated by neutralts at render time).
+    JsonStr(String),
     /// Schema as MessagePack bytes.
     Msgpack(Vec<u8>),
 }
@@ -41,6 +43,8 @@ enum BaseSchema {
 enum SchemaMerge {
     /// JSON schema to merge.
     Json(Value),
+    /// JSON schema string to merge (validated by neutralts at render time).
+    JsonStr(String),
     /// MessagePack schema to merge.
     Msgpack(Vec<u8>),
 }
@@ -170,95 +174,6 @@ impl NeutralTemplate {
             "schema_obj contains unsupported type",
         ))
     }
-
-    /// Executes the template rendering process.
-    ///
-    /// This internal method handles the actual rendering logic, including:
-    /// - Loading templates from file or raw source
-    /// - Applying base schema and merged schemas
-    /// - Capturing status information
-    ///
-    /// # Arguments
-    ///
-    /// * `py` - Python GIL token for thread safety.
-    /// * `render_once` - If true, uses `render_once()` which consumes the schema
-    ///   for better performance. If false, uses standard `render()` which clones
-    ///   the schema and allows template reuse.
-    ///
-    /// # Returns
-    ///
-    /// The rendered template content as a string.
-    ///
-    /// # Errors
-    ///
-    /// Returns a `PyErr` if template loading or rendering fails.
-    fn run_render(&mut self, py: Python<'_>, render_once: bool) -> PyResult<String> {
-        let (contents, status_code, status_text, status_param, has_error) = py
-            .detach(|| {
-                let mut template = match &self.tpl {
-                    TplType::FilePath(path) => match &self.base_schema {
-                        BaseSchema::None => Template::from_file_value(path, serde_json::json!({}))
-                            .map_err(|e| format!("Template::from_file_value() failed: {}", e))?,
-                        BaseSchema::Json(schema) => Template::from_file_value(path, schema.clone())
-                            .map_err(|e| format!("Template::from_file_value() failed: {}", e))?,
-                        BaseSchema::Msgpack(bytes) => Template::from_file_msgpack(path, bytes)
-                            .map_err(|e| format!("Template::from_file_msgpack() failed: {}", e))?,
-                    },
-                    TplType::RawSource(source) => {
-                        let mut template = Template::new()
-                            .map_err(|e| format!("Template::new() failed: {}", e))?;
-                        match &self.base_schema {
-                            BaseSchema::None => {}
-                            BaseSchema::Json(schema) => {
-                                template.merge_schema_value(schema.clone());
-                            }
-                            BaseSchema::Msgpack(bytes) => {
-                                template
-                                    .merge_schema_msgpack(bytes)
-                                    .map_err(|e| format!("merge_schema_msgpack failed: {}", e))?;
-                            }
-                        }
-                        template.set_src_str(source);
-                        template
-                    }
-                };
-
-                for merge in &self.schema_merges {
-                    match merge {
-                        SchemaMerge::Json(schema) => {
-                            template.merge_schema_value(schema.clone());
-                        }
-                        SchemaMerge::Msgpack(bytes) => {
-                            template
-                                .merge_schema_msgpack(bytes)
-                                .map_err(|e| format!("merge_schema_msgpack failed: {}", e))?;
-                        }
-                    }
-                }
-
-                let contents = if render_once {
-                    template.render_once()
-                } else {
-                    template.render()
-                };
-
-                Ok::<_, String>((
-                    contents,
-                    template.get_status_code().clone(),
-                    template.get_status_text().clone(),
-                    template.get_status_param().clone(),
-                    template.has_error(),
-                ))
-            })
-            .map_err(|msg| PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(msg))?;
-
-        self.status_code = status_code;
-        self.status_text = status_text;
-        self.status_param = status_param;
-        self.has_error = has_error;
-
-        Ok(contents)
-    }
 }
 
 #[pymethods]
@@ -283,9 +198,10 @@ impl NeutralTemplate {
     ///
     /// Returns a `PyErr` if:
     /// - More than one schema input is provided
-    /// - The JSON schema string is invalid
-    /// - The MessagePack schema is invalid
     /// - The Python object contains unsupported types
+    ///
+    /// Note: `schema_str` and `schema_msgpack` are validated by `neutralts`
+    /// when `render()` is called.
     ///
     /// # Example
     ///
@@ -325,12 +241,7 @@ impl NeutralTemplate {
         };
 
         let base_schema = if has_str {
-            let schema: Value = serde_json::from_str(schema_str.unwrap()).map_err(|e| {
-                PyErr::new::<pyo3::exceptions::PyValueError, _>(
-                    format!("schema is not a valid JSON string: {}", e),
-                )
-            })?;
-            BaseSchema::Json(schema)
+            BaseSchema::JsonStr(schema_str.unwrap().to_owned())
         } else if has_msgpack {
             BaseSchema::Msgpack(schema_msgpack.unwrap().to_vec())
         } else if let Some(obj) = schema_obj {
@@ -352,9 +263,9 @@ impl NeutralTemplate {
 
     /// Renders the template and returns the output.
     ///
-    /// This method clones the schema before rendering, allowing the template
-    /// to be rendered multiple times. For single-render scenarios, consider
-    /// using `render_once()` for better performance.
+    /// This method creates a new internal Rust Template and renders it using
+    /// `render_once()` for optimal performance. The NeutralTemplate instance
+    /// can be reused for multiple renders by modifying the schema between calls.
     ///
     /// # Returns
     ///
@@ -370,64 +281,105 @@ impl NeutralTemplate {
     /// template = NeutralTemplate("file.ntpl", schema_obj={"data": {"title": "Hello"}})
     /// output = template.render()
     /// print(output)
+    ///
+    /// # Can render again with modified schema
+    /// template.merge_schema_obj({"data": {"title": "World"}})
+    /// output2 = template.render()
     /// ```
     #[pyo3(text_signature = "(/)")]
     fn render(&mut self, py: Python<'_>) -> PyResult<String> {
-        self.run_render(py, false)
-    }
+        let render_result = py.detach(|| {
+            let mut template = match &self.tpl {
+                TplType::FilePath(path) => match &self.base_schema {
+                    BaseSchema::None => Template::from_file_value(path, serde_json::json!({}))
+                        .map_err(|e| format!("Template::from_file_value() failed: {}", e))?,
+                    BaseSchema::Json(schema) => Template::from_file_value(path, schema.clone())
+                        .map_err(|e| format!("Template::from_file_value() failed: {}", e))?,
+                    BaseSchema::JsonStr(schema_str) => {
+                        let mut template = Template::from_file_value(path, serde_json::json!({}))
+                            .map_err(|e| {
+                            format!("Template::from_file_value() failed: {}", e)
+                        })?;
+                        template
+                            .merge_schema_str(schema_str)
+                            .map_err(|e| format!("merge_schema_str failed: {}", e))?;
+                        template
+                    }
+                    BaseSchema::Msgpack(bytes) => Template::from_file_msgpack(path, bytes)
+                        .map_err(|e| format!("Template::from_file_msgpack() failed: {}", e))?,
+                },
+                TplType::RawSource(source) => {
+                    let mut template =
+                        Template::new().map_err(|e| format!("Template::new() failed: {}", e))?;
+                    match &self.base_schema {
+                        BaseSchema::None => {}
+                        BaseSchema::Json(schema) => {
+                            template.merge_schema_value(schema.clone());
+                        }
+                        BaseSchema::JsonStr(schema_str) => {
+                            template
+                                .merge_schema_str(schema_str)
+                                .map_err(|e| format!("merge_schema_str failed: {}", e))?;
+                        }
+                        BaseSchema::Msgpack(bytes) => {
+                            template
+                                .merge_schema_msgpack(bytes)
+                                .map_err(|e| format!("merge_schema_msgpack failed: {}", e))?;
+                        }
+                    }
+                    template.set_src_str(source);
+                    template
+                }
+            };
 
-    /// Renders the template without cloning the schema (optimized for single use).
-    ///
-    /// This is an optimized version of `render()` that takes ownership of the schema
-    /// instead of cloning it. Use this when you only need to render once per template
-    /// instance, which is the most common use case in web applications.
-    ///
-    /// # When to Use
-    ///
-    /// - **Single render per request**: Most web applications create a template,
-    ///   render it once, and discard it. This is the ideal use case for `render_once()`.
-    /// - **Large schemas**: When your schema contains thousands of keys, the
-    ///   performance improvement can be significant.
-    /// - **Memory-constrained environments**: Avoids the memory spike of cloning
-    ///   large schemas.
-    ///
-    /// # When NOT to Use
-    ///
-    /// - **Multiple renders**: If you need to render the same template multiple times
-    ///   with the same schema, use `render()` instead.
-    /// - **Template reuse**: After `render_once()`, the template cannot be reused
-    ///   because the schema is consumed.
-    ///
-    /// # Post-Call Behavior
-    ///
-    /// After calling this method, the template's schema will be empty (`{}`) and
-    /// subsequent calls to `render()` or `render_once()` will produce empty output
-    /// for schema variables. The template struct itself remains valid but should
-    /// be discarded after use.
-    ///
-    /// # Returns
-    ///
-    /// The rendered template content as a string.
-    ///
-    /// # Errors
-    ///
-    /// Returns a `PyErr` if template loading or rendering fails.
-    ///
-    /// # Example
-    ///
-    /// ```python
-    /// template = NeutralTemplate("file.ntpl", schema_obj={"data": {"title": "Hello"}})
-    ///
-    /// # Single render - use render_once() for best performance
-    /// output = template.render_once()
-    /// print(output)
-    ///
-    /// # Template should NOT be reused after render_once()
-    /// # Create a new NeutralTemplate instance for the next render
-    /// ```
-    #[pyo3(text_signature = "(/)")]
-    fn render_once(&mut self, py: Python<'_>) -> PyResult<String> {
-        self.run_render(py, true)
+            for merge in &self.schema_merges {
+                match merge {
+                    SchemaMerge::Json(schema) => {
+                        template.merge_schema_value(schema.clone());
+                    }
+                    SchemaMerge::JsonStr(schema_str) => {
+                        template
+                            .merge_schema_str(schema_str)
+                            .map_err(|e| format!("merge_schema_str failed: {}", e))?;
+                    }
+                    SchemaMerge::Msgpack(bytes) => {
+                        template
+                            .merge_schema_msgpack(bytes)
+                            .map_err(|e| format!("merge_schema_msgpack failed: {}", e))?;
+                    }
+                }
+            }
+
+            // Use render_once() for optimal performance since we create a new
+            // Template on each call anyway
+            let contents = template.render_once();
+
+            Ok::<_, String>((
+                contents,
+                template.get_status_code().clone(),
+                template.get_status_text().clone(),
+                template.get_status_param().clone(),
+                template.has_error(),
+            ))
+        });
+
+        let (contents, status_code, status_text, status_param, has_error) = match render_result {
+            Ok(values) => values,
+            Err(msg) => {
+                self.status_code.clear();
+                self.status_text.clear();
+                self.status_param = msg.clone();
+                self.has_error = true;
+                return Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(msg));
+            }
+        };
+
+        self.status_code = status_code;
+        self.status_text = status_text;
+        self.status_param = status_param;
+        self.has_error = has_error;
+
+        Ok(contents)
     }
 
     /// Returns the HTTP status code from the last render.
@@ -524,7 +476,7 @@ impl NeutralTemplate {
     ///
     /// # Errors
     ///
-    /// Returns a `PyErr` if the JSON string is invalid.
+    /// This method stores the JSON string and defers validation to `render()`.
     ///
     /// # Example
     ///
@@ -534,16 +486,11 @@ impl NeutralTemplate {
     /// ```
     #[pyo3(text_signature = "(schema_str)")]
     fn merge_schema(&mut self, schema_str: &str) -> PyResult<()> {
-        let schema: Value = serde_json::from_str(schema_str).map_err(|e| {
-            PyErr::new::<pyo3::exceptions::PyValueError, _>(format!(
-                "schema is not a valid JSON string: {}",
-                e
-            ))
-        })?;
         match &mut self.base_schema {
-            BaseSchema::None => self.base_schema = BaseSchema::Json(schema),
-            BaseSchema::Json(base_schema) => utils::merge_schema(base_schema, &schema),
-            BaseSchema::Msgpack(_) => self.schema_merges.push(SchemaMerge::Json(schema)),
+            BaseSchema::None => self.base_schema = BaseSchema::JsonStr(schema_str.to_owned()),
+            BaseSchema::Json(_) | BaseSchema::JsonStr(_) | BaseSchema::Msgpack(_) => self
+                .schema_merges
+                .push(SchemaMerge::JsonStr(schema_str.to_owned())),
         }
         Ok(())
     }
@@ -558,7 +505,7 @@ impl NeutralTemplate {
     ///
     /// # Errors
     ///
-    /// Returns a `PyErr` if the MessagePack bytes are invalid.
+    /// This method stores the MessagePack bytes and defers validation to `render()`.
     ///
     /// # Example
     ///
@@ -570,8 +517,11 @@ impl NeutralTemplate {
     /// ```
     #[pyo3(text_signature = "(schema_msgpack)")]
     fn merge_schema_msgpack(&mut self, schema_msgpack: &[u8]) -> PyResult<()> {
-        self.schema_merges
-            .push(SchemaMerge::Msgpack(schema_msgpack.to_vec()));
+        let bytes = schema_msgpack.to_vec();
+        match &self.base_schema {
+            BaseSchema::None => self.base_schema = BaseSchema::Msgpack(bytes),
+            _ => self.schema_merges.push(SchemaMerge::Msgpack(bytes)),
+        }
         Ok(())
     }
 
@@ -608,7 +558,9 @@ impl NeutralTemplate {
         match &mut self.base_schema {
             BaseSchema::None => self.base_schema = BaseSchema::Json(schema),
             BaseSchema::Json(base_schema) => utils::merge_schema(base_schema, &schema),
-            BaseSchema::Msgpack(_) => self.schema_merges.push(SchemaMerge::Json(schema)),
+            BaseSchema::JsonStr(_) | BaseSchema::Msgpack(_) => {
+                self.schema_merges.push(SchemaMerge::Json(schema))
+            }
         }
         Ok(())
     }

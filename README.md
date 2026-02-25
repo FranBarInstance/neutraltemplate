@@ -53,7 +53,7 @@ schema = """
 }
 """
 
-template = NeutralTemplate("file.ntpl", schema)
+template = NeutralTemplate("file.ntpl", schema_str=schema)
 contents = template.render()
 
 # e.g.: 200
@@ -101,33 +101,22 @@ template.merge_schema_obj({"data": {"title": "Hello"}})
 contents = template.render()  # "Hello"
 ```
 
-### Optimized rendering with render_once()
+### Multiple renders with the same NeutralTemplate instance
 
-Use `render_once()` for better performance when you only need to render once:
+You can render the same `NeutralTemplate` instance multiple times:
 
 ```python
 from neutraltemplate import NeutralTemplate
 
 template = NeutralTemplate("file.ntpl", schema_obj={"data": {"title": "Hello"}})
 
-# Single render - use render_once() for best performance
-contents = template.render_once()
+# First render
+contents1 = template.render()
 
-# IMPORTANT: After render_once(), the template cannot be reused!
-# The schema is consumed and subsequent renders will produce empty output.
-# Create a new NeutralTemplate instance for the next render.
+# You can modify the schema and render again
+template.merge_schema_obj({"data": {"title": "World"}})
+contents2 = template.render()
 ```
-
-#### When to use render_once()
-
-- **Single render per request**: Most web applications create a template, render it once, and discard it.
-- **Large schemas**: When your schema contains thousands of keys, the performance improvement is significant.
-- **Memory-constrained environments**: Avoids the memory spike of cloning large schemas.
-
-#### When NOT to use render_once()
-
-- **Multiple renders**: If you need to render the same template multiple times with the same schema, use `render()` instead.
-- **Template reuse**: After `render_once()`, the template cannot be reused because the schema is consumed.
 
 MessagePack schema
 ------------------
@@ -149,15 +138,16 @@ template.merge_schema_msgpack(schema_msgpack)
 Performance Notes
 -----------------
 
-For best performance, choose the schema input method based on your use case:
+For best performance, choose the schema input method based on your use case.
+Current project benchmarks are in `local_bench/` and should be treated as workload-dependent:
 
 | Method | Performance | Notes |
 |--------|-------------|-------|
-| `schema_obj` | **Best** | Python dict/list passed directly, no serialization overhead |
-| `schema_msgpack` | **Near best** | Binary format, almost as fast as `schema_obj` |
-| `schema_str` (JSON) | **2-3x slower** | Requires JSON parsing; difference is negligible for small schemas |
+| `schema_obj` | **Best in current local bench** | Python dict/list converted recursively to JSON internally |
+| `schema_msgpack` | **Near best in current local bench** | Binary format, validated at API boundary |
+| `schema_str` (JSON) | **Usually slower for larger schemas** | Requires JSON parsing |
 
-**Recommendation**: Use `schema_obj` for simplicity and best performance. For small schemas, the difference is not relevant.
+**Recommendation**: Use `schema_obj` for simplicity. For large schemas and hot paths, benchmark your own workload (`local_bench/bench.py`) before deciding.
 
 ```python
 # Recommended: schema_obj (fastest and simplest)
@@ -166,7 +156,7 @@ template = NeutralTemplate("file.ntpl", schema_obj={"data": {"title": "Hello"}})
 # Good alternative: schema_msgpack (nearly as fast)
 template = NeutralTemplate("file.ntpl", schema_msgpack=msgpack_bytes)
 
-# Avoid for large schemas: schema_str (2-3x slower due to JSON parsing)
+# Often slower for large schemas: schema_str (JSON parsing cost)
 template = NeutralTemplate("file.ntpl", schema_str='{"data": {"title": "Hello"}}')
 ```
 
@@ -185,13 +175,13 @@ NeutralTemplate(
 ```
 
 Only one of `schema_str`, `schema_msgpack`, or `schema_obj` can be used at a time.
+`schema_str` and `schema_msgpack` are validated by `neutralts` during `render()`.
 
 ### Methods
 
 | Method | Description |
 |--------|-------------|
-| `render()` | Render template (clones schema, reusable) |
-| `render_once()` | Render template (consumes schema, optimized, not reusable) |
+| `render()` | Render template (optimized internally with render_once) |
 | `set_path(path)` | Set template file path |
 | `set_source(source)` | Set template source code directly |
 | `merge_schema(schema_str)` | Merge JSON schema from string |

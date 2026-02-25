@@ -358,18 +358,20 @@ class TestNeutralTemplate(unittest.TestCase):
         self.assertIn("os error 2", error_message)
 
     def test_initialization_with_invalid_schema(self):
-        """Test initialization fails with invalid JSON schema."""
+        """Invalid JSON schema_str now fails at render time."""
 
-        with self.assertRaises(ValueError):
-            NeutralTemplate(TEMPLATE1, "{")
+        template = NeutralTemplate(TEMPLATE1, "{")
+        with self.assertRaises(RuntimeError):
+            template.render()
 
     def test_initialization_with_invalid_json_merge_schema(self):
-        """Test initialization fails with invalid JSON in merge_schema."""
+        """Invalid JSON merge now fails at render time."""
 
         template = NeutralTemplate(TEMPLATE_ERROR)
-
-        with self.assertRaises(ValueError):
-            template.merge_schema("{")
+        template.set_source("{:;key:}")
+        template.merge_schema("{")
+        with self.assertRaises(RuntimeError):
+            template.render()
 
     def test_initialization_with_msgpack_schema(self):
         """Test initialization with MessagePack schema."""
@@ -396,17 +398,52 @@ class TestNeutralTemplate(unittest.TestCase):
         self.assertEqual(template.has_error(), False)
 
     def test_initialization_with_invalid_msgpack_schema(self):
-        """Test initialization fails with invalid MessagePack schema."""
+        """Invalid MessagePack schema now fails at render time."""
 
-        with self.assertRaises(ValueError):
-            NeutralTemplate(schema_msgpack=b"\xc1")
+        template = NeutralTemplate(schema_msgpack=b"\xc1")
+        template.set_source("{:;key:}")
+        with self.assertRaises(RuntimeError):
+            template.render()
 
     def test_merge_schema_msgpack_invalid_data(self):
-        """Test merge_schema_msgpack fails with invalid MessagePack bytes."""
+        """Invalid merged MessagePack now fails at render time."""
 
         template = NeutralTemplate()
-        with self.assertRaises(ValueError):
-            template.merge_schema_msgpack(b"\xc1")
+        template.set_source("{:;key:}")
+        template.merge_schema_msgpack(b"\xc1")
+        with self.assertRaises(RuntimeError):
+            template.render()
+
+    def test_merge_order_msgpack_then_json(self):
+        """Last merge must win, preserving call order (msgpack -> json)."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key:}")
+        template.merge_schema_msgpack(SCHEMA_MSGPACK)  # key=value
+        template.merge_schema('{"key":"json"}')
+        contents = template.render()
+
+        self.assertEqual(contents, "json")
+        self.assertEqual(template.has_error(), False)
+
+    def test_render_error_resets_status(self):
+        """After a render failure, status fields must not keep stale success values."""
+
+        template = NeutralTemplate(TEMPLATE1)
+        ok_contents = template.render()
+        self.assertEqual(ok_contents, "Hello nts")
+        self.assertEqual(template.get_status_code(), "200")
+        self.assertEqual(template.get_status_text(), "OK")
+        self.assertEqual(template.has_error(), False)
+
+        template.set_path(TEMPLATE_ERROR)
+        with self.assertRaises(RuntimeError):
+            template.render()
+
+        self.assertEqual(template.get_status_code(), "")
+        self.assertEqual(template.get_status_text(), "")
+        self.assertEqual(template.has_error(), True)
+        self.assertIn("Template::from_file_value() failed", template.get_status_param())
 
     def test_bif_cache_complete(self):
         """Test some bif with cache."""
