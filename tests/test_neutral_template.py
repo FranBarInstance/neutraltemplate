@@ -2,6 +2,7 @@
 import unittest
 import os
 import time
+import msgpack
 from neutraltemplate import NeutralTemplate
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -115,9 +116,12 @@ SCHEMA1 = """
     }
 }
 """
-SCHEMA_MSGPACK = bytes([
-    129, 164, 100, 97, 116, 97, 129, 163, 107, 101, 121, 165, 118, 97, 108, 117, 101
-])
+SCHEMA_MSGPACK = msgpack.packb({
+    "data": {
+        "key": "value"
+    }
+})
+
 SCHEMA2 = """
 {
     "config": {
@@ -419,8 +423,10 @@ class TestNeutralTemplate(unittest.TestCase):
 
         template = NeutralTemplate()
         template.set_source("{:;key:}")
-        template.merge_schema_msgpack(SCHEMA_MSGPACK)  # key=value
-        template.merge_schema('{"key":"json"}')
+        # JSON equivalent: {"data": {"key": "value"}}
+        template.merge_schema_msgpack(SCHEMA_MSGPACK)
+        # JSON equivalent: {"data": {"key": "json"}}
+        template.merge_schema('{"data": {"key": "json"}}')
         contents = template.render()
 
         self.assertEqual(contents, "json")
