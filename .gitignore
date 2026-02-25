@@ -4,6 +4,8 @@
 /pru
 .env/
 .env
+/local_bench
+/local_bench/*
 /examples/flask/src/neutraltemplate
 
 # Byte-compiled / optimized / DLL files

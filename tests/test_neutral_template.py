@@ -115,6 +115,9 @@ SCHEMA1 = """
     }
 }
 """
+SCHEMA_MSGPACK = bytes([
+    129, 164, 100, 97, 116, 97, 129, 163, 107, 101, 121, 165, 118, 97, 108, 117, 101
+])
 SCHEMA2 = """
 {
     "config": {
@@ -367,6 +370,43 @@ class TestNeutralTemplate(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             template.merge_schema("{")
+
+    def test_initialization_with_msgpack_schema(self):
+        """Test initialization with MessagePack schema."""
+
+        template = NeutralTemplate(schema_msgpack=SCHEMA_MSGPACK)
+        template.set_source("{:;key:}")
+        contents = template.render()
+
+        self.assertEqual(contents, "value")
+        self.assertEqual(template.has_error(), False)
+        self.assertEqual(template.get_status_code(), "200")
+        self.assertEqual(template.get_status_text(), "OK")
+        self.assertEqual(template.get_status_param(), "")
+
+    def test_merge_schema_msgpack(self):
+        """Test merge_schema_msgpack with valid bytes."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key:}")
+        template.merge_schema_msgpack(SCHEMA_MSGPACK)
+        contents = template.render()
+
+        self.assertEqual(contents, "value")
+        self.assertEqual(template.has_error(), False)
+
+    def test_initialization_with_invalid_msgpack_schema(self):
+        """Test initialization fails with invalid MessagePack schema."""
+
+        with self.assertRaises(ValueError):
+            NeutralTemplate(schema_msgpack=b"\xc1")
+
+    def test_merge_schema_msgpack_invalid_data(self):
+        """Test merge_schema_msgpack fails with invalid MessagePack bytes."""
+
+        template = NeutralTemplate()
+        with self.assertRaises(ValueError):
+            template.merge_schema_msgpack(b"\xc1")
 
     def test_bif_cache_complete(self):
         """Test some bif with cache."""
