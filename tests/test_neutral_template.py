@@ -495,6 +495,138 @@ class TestNeutralTemplate(unittest.TestCase):
         # we give 2 second for cache reset to repeat tests because: {:^cache; /3/ >>
         time.sleep(2)
 
+    def test_initialization_with_schema_obj(self):
+        """Test initialization with Python dict schema."""
+
+        template = NeutralTemplate(TEMPLATE1, schema_obj={"data": {"__hello-nts": "From dict"}})
+        contents = template.render()
+
+        self.assertEqual(contents, "From dict")
+        self.assertEqual(template.has_error(), False)
+        self.assertEqual(template.get_status_code(), "200")
+        self.assertEqual(template.get_status_text(), "OK")
+        self.assertEqual(template.get_status_param(), "")
+
+    def test_merge_schema_obj(self):
+        """Test merge_schema_obj with Python dict."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key:}")
+        template.merge_schema_obj({"data": {"key": "value from dict"}})
+        contents = template.render()
+
+        self.assertEqual(contents, "value from dict")
+        self.assertEqual(template.has_error(), False)
+
+    def test_merge_schema_obj_complex_types(self):
+        """Test merge_schema_obj with nested dicts, lists, tuples."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;nested->level:} {:;items->0:} {:;items->1:} {:;number:}")
+        template.merge_schema_obj({
+            "data": {
+                "nested": {"level": "deep"},
+                "items": ["first", "second", "third"],
+                "number": 42
+            }
+        })
+        contents = template.render()
+
+        self.assertEqual(contents, "deep first second 42")
+        self.assertEqual(template.has_error(), False)
+
+    def test_merge_schema_obj_tuple(self):
+        """Test merge_schema_obj with tuple (should become array)."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;items->0:} {:;items->1:}")
+        template.merge_schema_obj({"data": {"items": ("first", "second")}})
+        contents = template.render()
+
+        self.assertEqual(contents, "first second")
+        self.assertEqual(template.has_error(), False)
+
+    def test_merge_schema_obj_unsupported_type(self):
+        """Test merge_schema_obj with unsupported type raises error."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key:}")
+        with self.assertRaises(TypeError):
+            template.merge_schema_obj({"data": {"key": object()}})
+
+    def test_merge_schema_obj_nan(self):
+        """Test merge_schema_obj with NaN raises error."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key:}")
+        with self.assertRaises(ValueError):
+            template.merge_schema_obj({"data": {"key": float('nan')}})
+
+    def test_merge_schema_obj_infinity(self):
+        """Test merge_schema_obj with Infinity raises error."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key:}")
+        with self.assertRaises(ValueError):
+            template.merge_schema_obj({"data": {"key": float('inf')}})
+
+    def test_constructor_multiple_schemas_str_and_obj(self):
+        """Test that providing schema_str and schema_obj raises ValueError."""
+
+        with self.assertRaises(ValueError) as context:
+            NeutralTemplate(TEMPLATE1, schema_str='{"data": {}}', schema_obj={"data": {}})
+        self.assertIn("use only one schema input", str(context.exception))
+
+    def test_constructor_multiple_schemas_str_and_msgpack(self):
+        """Test that providing schema_str and schema_msgpack raises ValueError."""
+
+        with self.assertRaises(ValueError) as context:
+            NeutralTemplate(TEMPLATE1, schema_str='{"data": {}}', schema_msgpack=SCHEMA_MSGPACK)
+        self.assertIn("use only one schema input", str(context.exception))
+
+    def test_constructor_multiple_schemas_obj_and_msgpack(self):
+        """Test that providing schema_obj and schema_msgpack raises ValueError."""
+
+        with self.assertRaises(ValueError) as context:
+            NeutralTemplate(TEMPLATE1, schema_obj={"data": {}}, schema_msgpack=SCHEMA_MSGPACK)
+        self.assertIn("use only one schema input", str(context.exception))
+
+    def test_merge_schema_obj_cumulative(self):
+        """Test that multiple merges accumulate correctly."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key1:} {:;key2:}")
+        template.merge_schema_obj({"data": {"key1": "first"}})
+        template.merge_schema_obj({"data": {"key2": "second"}})
+        contents = template.render()
+
+        self.assertEqual(contents, "first second")
+        self.assertEqual(template.has_error(), False)
+
+    def test_merge_order_obj_then_json(self):
+        """Last merge must win, preserving call order (obj -> json)."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key:}")
+        template.merge_schema_obj({"data": {"key": "from obj"}})
+        template.merge_schema('{"data": {"key": "from json"}}')
+        contents = template.render()
+
+        self.assertEqual(contents, "from json")
+        self.assertEqual(template.has_error(), False)
+
+    def test_merge_order_json_then_obj(self):
+        """Last merge must win, preserving call order (json -> obj)."""
+
+        template = NeutralTemplate()
+        template.set_source("{:;key:}")
+        template.merge_schema('{"data": {"key": "from json"}}')
+        template.merge_schema_obj({"data": {"key": "from obj"}})
+        contents = template.render()
+
+        self.assertEqual(contents, "from obj")
+        self.assertEqual(template.has_error(), False)
+
 
 if __name__ == '__main__':
     unittest.main()
