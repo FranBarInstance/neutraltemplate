@@ -192,11 +192,16 @@ Only one of `schema_str`, `schema_msgpack`, or `schema_obj` can be used at a tim
 | `get_status_param()` | Get additional error parameter |
 | `has_error()` | Returns True if error occurred during render |
 
+### Advanced Usage Example
+
+For those seeking to explore an **advanced**, production-ready implementation of this module within a full-featured Python Flask project, refer to the **[Neutral Starter Py](https://github.com/FranBarInstance/neutral-starter-py)** repository. It demonstrates complex integration scenarios, including scalable architecture patterns, comprehensive error handling, advanced dependency management, automated testing workflows.
+
 Links
 -----
 
 Neutral TS template engine Python Package.
 
+- [Neutral Starter Py](https://github.com/FranBarInstance/neutral-starter-py)
 - [Template docs](https://franbarinstance.github.io/neutralts-docs/docs/neutralts/doc/)
 - [Repository](https://github.com/FranBarInstance/neutraltemplate)
 - [Crate](https://crates.io/crates/neutralts)
